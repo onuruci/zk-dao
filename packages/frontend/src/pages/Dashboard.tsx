@@ -68,7 +68,6 @@ export default observer(() => {
     }
 
     const getPosts = async () => {
-
         const posts: any = await appContract.getAllPosts();
         console.log("Posts:    ", posts);
         setPosts([...posts]);
@@ -273,23 +272,6 @@ export default observer(() => {
 
                         <Button
                             onClick={async () => {
-                                if (
-                                    userContext.userState &&
-                                    userContext.userState.sync.calcCurrentEpoch() !==
-                                    (await userContext.userState.latestTransitionedEpoch())
-                                ) {
-                                    throw new Error('Needs transition')
-                                }
-                                // await userContext.newPost(
-                                //     reqInfo.nonce ?? 0
-                                // )
-                            }}
-                        >
-                            New Post
-                        </Button>
-
-                        <Button
-                            onClick={async () => {
                                 consoleLogPostCount();
                             }}
                         >
@@ -297,7 +279,7 @@ export default observer(() => {
                         </Button>
 
                         {
-                            posts.length > 0 && posts.map((p: any, i: number) => {
+                            posts && posts.map((p: any, i: number) => {
 
                                 return <Post
                                     epochKey={p.epochKey}
