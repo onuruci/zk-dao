@@ -24,10 +24,6 @@ type ProofInfo = {
     valid: boolean
 }
 
-type Post = {
-    context: string
-}
-
 export default observer(() => {
     const userContext = React.useContext(User)
     const [remainingTime, setRemainingTime] = React.useState<number | string>(0)
@@ -283,9 +279,12 @@ export default observer(() => {
 
                                 return <Post
                                     epochKey={p.epochKey}
+                                    postEpoch={p.postEpoch}
+                                    currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
                                     minRep={p.publicSignals[1].toString()}
                                     publicSignals={p.publicSignals}
                                     proof={p.proof}
+                                    index={i}
                                 />;
                             })
                         }
