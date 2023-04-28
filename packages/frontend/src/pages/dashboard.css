@@ -97,12 +97,25 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-left: 20px;
+    border: 1px solid black;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 12px;
 }
 
-.post-form > div {
+.post-field-container {
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+.post-field-container > label {
+    font-size: 18px;
+    font-weight: 800;
+}
+.last-post-field {
+    margin-bottom: 20px;
 }
 
 .posts-container {
@@ -110,6 +123,11 @@ textarea {
     border-radius: 16px;
     padding: 20px;
     margin-left: 20px;
+}
+
+.right-side-container {
+    display: flex;
+    flex-direction: row;
 }
 
 /* .story {

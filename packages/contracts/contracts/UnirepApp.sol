@@ -26,6 +26,7 @@ contract UnirepApp {
         uint256[8] proof;
         string context;
         uint256 upVotes;
+        uint256 downVotes;
     }
 
     struct PostForm {
@@ -75,7 +76,6 @@ contract UnirepApp {
 
     function upVote(uint256 index) public {
         submitAttestation(posts[index].epochKey, posts[index].postEpoch, 0, 10);
-
         posts[index].upVotes++;
     }
 
@@ -87,8 +87,9 @@ contract UnirepApp {
         string calldata context
     ) public {
         require(verifyDataProof(publicSignals, proof));
-
-        posts.push(Post(epochKey, currEpoch, publicSignals, proof, context, 0));
+        posts.push(
+            Post(epochKey, currEpoch, publicSignals, proof, context, 0, 0)
+        );
 
         postCount++;
     }
