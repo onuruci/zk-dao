@@ -64,9 +64,9 @@ export default observer(() => {
     }
 
     const getPosts = async () => {
-        const posts: any = await appContract.getAllPosts();
-        console.log("Posts:    ", posts);
-        setPosts([...posts]);
+        const posts: [] = await appContract.getAllPosts();
+        let arr = posts.slice().reverse();
+        setPosts([...arr]);
     }
 
     React.useEffect(() => {
