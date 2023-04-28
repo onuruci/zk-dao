@@ -270,6 +270,7 @@ export default observer(() => {
                                         context={p.context}
                                         currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
                                         postEpoch={p.postEpoch}
+                                        index={i}
                                     />
                                 )
                             })}
