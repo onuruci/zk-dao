@@ -9,10 +9,14 @@ import { ethers } from 'ethers'
 
 import User from '../contexts/User'
 
-const APP_ADDRESS = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
-const ETH_PROVIDER_URL = 'http://localhost:8545'
+const APP_ADDRESS = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'
+const ETH_PROVIDER_URL = 'http://127.0.0.1:8545/'
 
-const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
+const appContract = new ethers.Contract(
+    APP_ADDRESS,
+    UNIREP_APP.abi,
+    new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL)
+)
 
 type ReqInfo = {
     nonce: number
@@ -39,13 +43,12 @@ export default observer(() => {
         proof: [],
         valid: false,
     })
-    const [posts, setPosts] = React.useState<any>();
+    const [posts, setPosts] = React.useState<any>()
 
     const consoleLogPostCount = async () => {
+        const postCount: any = await appContract.postCount()
 
-        const postCount: any = await appContract.postCount();
-
-        console.log(postCount);
+        console.log(postCount)
     }
 
     const updateTimer = () => {
@@ -64,9 +67,9 @@ export default observer(() => {
     }
 
     const getPosts = async () => {
-        const posts: [] = await appContract.getAllPosts();
-        let arr = posts.slice().reverse();
-        setPosts([...arr]);
+        const posts: [] = await appContract.getAllPosts()
+        let arr = posts.slice().reverse()
+        setPosts([...arr])
     }
 
     React.useEffect(() => {
@@ -86,6 +89,7 @@ export default observer(() => {
     return (
         <div>
             <h1>Dashboard</h1>
+            <div>hello world</div>
             <div className="container">
                 <div className="info-container">
                     <div className="info-item">
@@ -252,7 +256,7 @@ export default observer(() => {
                                 if (
                                     userContext.userState &&
                                     userContext.userState.sync.calcCurrentEpoch() !==
-                                    (await userContext.userState.latestTransitionedEpoch())
+                                        (await userContext.userState.latestTransitionedEpoch())
                                 ) {
                                     throw new Error('Needs transition')
                                 }
@@ -268,28 +272,27 @@ export default observer(() => {
 
                         <Button
                             onClick={async () => {
-                                consoleLogPostCount();
+                                consoleLogPostCount()
                             }}
                         >
                             LogPostCount
                         </Button>
 
-                        {
-                            posts && posts.map((p: any, i: number) => {
-
-                                return <Post
-                                    epochKey={p.epochKey}
-                                    postEpoch={p.postEpoch}
-                                    currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
-                                    minRep={p.publicSignals[1].toString()}
-                                    publicSignals={p.publicSignals}
-                                    proof={p.proof}
-                                    index={i}
-                                />;
-                            })
-                        }
+                        {posts &&
+                            posts.map((p: any, i: number) => {
+                                return (
+                                    <Post
+                                        epochKey={p.epochKey}
+                                        postEpoch={p.postEpoch}
+                                        currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
+                                        minRep={p.publicSignals[1].toString()}
+                                        publicSignals={p.publicSignals}
+                                        proof={p.proof}
+                                        index={i}
+                                    />
+                                )
+                            })}
                     </div>
-
 
                     <div className="action-container transition">
                         <div className="icon">
@@ -355,7 +358,7 @@ export default observer(() => {
                                         reqInfo.nonce ?? 0,
                                         proveData
                                     )
-                                    console.log(proof);
+                                    console.log(proof)
                                 }}
                             >
                                 New Post
@@ -372,13 +375,9 @@ export default observer(() => {
                                             : repProof.valid.toString()}
                                     </span>
                                 </div>
-                                {
-                                    repProof.proof.length
-                                }
+                                {repProof.proof.length}
                                 Public Signals
-                                {
-                                    repProof.publicSignals.length
-                                }
+                                {repProof.publicSignals.length}
                                 <textarea
                                     readOnly
                                     value={JSON.stringify(repProof, null, 2)}
@@ -388,6 +387,6 @@ export default observer(() => {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     )
 })
