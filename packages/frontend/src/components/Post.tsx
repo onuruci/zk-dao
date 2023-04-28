@@ -1,39 +1,45 @@
 import React from 'react'
 import './button.css'
 
+import User from '../contexts/User'
+
 type Props = {
   epochKey: any,
   minRep: any,
-
+  publicSignals: any,
+  proof: any
 }
 
-export default ({ style, loadingText, onClick, children }: Props) => {
-  const [loading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState('')
-  const handleClick = async () => {
-    if (loading) return
-    if (typeof onClick !== 'function') return
-    try {
-      setLoading(true)
-      await onClick()
-    } catch (err: any) {
-      console.log(err)
-      setError(err.toString())
-      setTimeout(() => setError(''), 2000)
-    } finally {
-      setLoading(false)
-    }
-  }
+export default ({ epochKey, minRep, publicSignals, proof }: Props) => {
+  const userContext = React.useContext(User)
+  const [valid, setValid] = React.useState<Boolean>(false);
+
+  React.useEffect(() => {
+    const checkProof = async () => {
+      const resProof = await userContext.proveOutput(
+        publicSignals,
+        proof
+      )
+      setValid(resProof.valid);
+    };
+
+    checkProof();
+  }, []);
+
   return (
-    <div className="button-outer">
-      <div
-        className="button-inner"
-        style={{ ...(style || {}) }}
-        onClick={handleClick}
-      >
-        {!loading && !error ? children : null}
-        {loading ? loadingText ?? 'Loading...' : null}
-        {error ? error : null}
+    <div>
+      <div>
+        Epoch Key:  {epochKey.toString()}
+      </div>
+      <div>
+        Min Rep: {minRep.toString()}
+      </div>
+      <div>
+        {
+          valid ?
+            'Proof Valid' :
+            'Not Valid'
+        }
       </div>
     </div>
   )

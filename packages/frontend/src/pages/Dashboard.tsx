@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite'
 import './dashboard.css'
 import Button from '../components/Button'
 import Tooltip from '../components/Tooltip'
+import Post from '../components/Post'
 import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
 import { ethers } from 'ethers'
 
@@ -10,6 +11,8 @@ import User from '../contexts/User'
 
 const APP_ADDRESS = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
 const ETH_PROVIDER_URL = 'http://localhost:8545'
+
+const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
 
 type ReqInfo = {
     nonce: number
@@ -43,7 +46,6 @@ export default observer(() => {
     const [posts, setPosts] = React.useState<any>();
 
     const consoleLogPostCount = async () => {
-        const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
 
         const postCount: any = await appContract.postCount();
 
@@ -66,7 +68,6 @@ export default observer(() => {
     }
 
     const getPosts = async () => {
-        const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
 
         const posts: any = await appContract.getAllPosts();
         console.log("Posts:    ", posts);
@@ -298,26 +299,12 @@ export default observer(() => {
                         {
                             posts.length > 0 && posts.map((p: any, i: number) => {
 
-                                return <div key={i}>
-                                    <div>
-                                        EpochKey: {p.epochKey.toString()}
-                                    </div>
-                                    <div>
-                                        Min Reputation: {p.publicSignals[1].toString()}
-                                    </div>
-                                    {/* {
-                                        proofRes.valid ?
-                                            <div>
-                                                Valid
-                                            </div> :
-                                            <div>
-                                                Not Valid
-                                            </div>
-                                    } */}
-
-                                </div>;
-                                //console.log(proofRes);
-
+                                return <Post
+                                    epochKey={p.epochKey}
+                                    minRep={p.publicSignals[1].toString()}
+                                    publicSignals={p.publicSignals}
+                                    proof={p.proof}
+                                />;
                             })
                         }
                     </div>
@@ -420,6 +407,6 @@ export default observer(() => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 })
