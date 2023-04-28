@@ -6,6 +6,7 @@ import Tooltip from '../components/Tooltip'
 import Post from '../components/Post'
 import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
 import { ethers } from 'ethers'
+import { I_POST, I_COMMENT } from './types'
 
 import User from '../contexts/User'
 
@@ -43,6 +44,7 @@ export default observer(() => {
         proof: [],
         valid: false,
     })
+
     const [posts, setPosts] = React.useState<any>()
 
     const consoleLogPostCount = async () => {
@@ -82,6 +84,11 @@ export default observer(() => {
         getPosts()
     }, [])
 
+    const [post, setPost] = React.useState<I_POST>({
+        context: '',
+        provedReputation: 0,
+    })
+
     if (!userContext.userState) {
         return <div className="container">Loading...</div>
     }
@@ -89,7 +96,7 @@ export default observer(() => {
     return (
         <div>
             <h1>Dashboard</h1>
-            <div>hello world</div>
+
             <div className="container">
                 <div className="info-container">
                     <div className="info-item">
@@ -176,8 +183,8 @@ export default observer(() => {
                     })}
                 </div>
 
-                <div style={{ display: 'flex' }}>
-                    <div className="action-container">
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {/* <div className="action-container">
                         <div className="icon">
                             <h2>Change Data</h2>
                             <Tooltip text="You can request changes to data here. The demo attester will freely change your data." />
@@ -235,7 +242,7 @@ export default observer(() => {
                         >
                             <option value="0">0</option>
                             <option value="1">1</option>
-                            {/* TODO: <option value="2">2</option> */}
+                            
                         </select>
                         <p style={{ fontSize: '12px' }}>
                             Requesting data with epoch key:
@@ -308,10 +315,28 @@ export default observer(() => {
 
                     <div className="action-container">
                         <div className="icon">
-                            <h2>Prove Data</h2>
+                            <h2>Create Post</h2>
                             <Tooltip text="Users can prove they control some amount of data without revealing exactly how much they control." />
                         </div>
-                        {Array(
+
+                        <form className="post-form">
+                            {Object.keys(post).map((key, index) => (
+                                <div>
+                                    <label>{key.toUpperCase()}</label>
+                                    <input
+                                        onChange={(e: any) =>
+                                            setPost({
+                                                ...post,
+                                                [key]: e.target.value,
+                                            })
+                                        }
+                                        type="string"
+                                    ></input>
+                                </div>
+                            ))}
+                        </form>
+
+                        {/* {Array(
                             userContext.userState.sync.settings.sumFieldCount
                         )
                             .fill(0)
@@ -338,8 +363,8 @@ export default observer(() => {
                                         />
                                     </div>
                                 )
-                            })}
-                        <div style={{ margin: '20px 0 20px' }}>
+                            })} */}
+                        {/* <div style={{ margin: '20px 0 20px' }}>
                             <Button
                                 onClick={async () => {
                                     const proof = await userContext.proveData(
@@ -350,15 +375,17 @@ export default observer(() => {
                             >
                                 Generate Proof
                             </Button>
-                        </div>
+                        </div> */}
+
                         <div style={{ margin: '20px 0 20px' }}>
                             <Button
                                 onClick={async () => {
                                     const proof = await userContext.newPost(
                                         reqInfo.nonce ?? 0,
-                                        proveData
+                                        proveData,
+                                        post
                                     )
-                                    console.log(proof)
+                                    getPosts()
                                 }}
                             >
                                 New Post
@@ -384,6 +411,20 @@ export default observer(() => {
                                 />
                             </>
                         ) : null}
+                    </div>
+                    <div className="posts-container">
+                        {posts?.length > 0 &&
+                            posts.map((p: any, i: number) => {
+                                return (
+                                    <Post
+                                        epochKey={p.epochKey}
+                                        minRep={p.publicSignals[1].toString()}
+                                        publicSignals={p.publicSignals}
+                                        proof={p.proof}
+                                        context={p.context}
+                                    />
+                                )
+                            })}
                     </div>
                 </div>
             </div>

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-import { Unirep } from "@unirep/contracts/Unirep.sol";
+import {Unirep} from '@unirep/contracts/Unirep.sol';
 
 // Uncomment this line to use console.log
-// import "hardhat/console.sol";
+import 'hardhat/console.sol';
 
 interface IVerifier {
     function verifyProof(
@@ -11,7 +11,6 @@ interface IVerifier {
         uint256[8] calldata proof
     ) external view returns (bool);
 }
-
 
 contract UnirepApp {
     Unirep public unirep;
@@ -27,6 +26,11 @@ contract UnirepApp {
         uint256[8] proof;
         string context;
         uint256 upVotes;
+    }
+
+    struct PostForm {
+        string context;
+        uint256 provedReputation;
     }
 
     constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) {
@@ -66,68 +70,46 @@ contract UnirepApp {
         uint256 fieldIndex,
         uint256 val
     ) public {
-        unirep.attest(
-            epochKey,
-            targetEpoch,
-            fieldIndex,
-            val
-        );
+        unirep.attest(epochKey, targetEpoch, fieldIndex, val);
     }
 
-    function upVote(
-        uint256 index
-    ) public {
-        submitAttestation(posts[index].epochKey, 
-            posts[index].postEpoch, 
-            0, 
-            10
-        );
+    function upVote(uint256 index) public {
+        submitAttestation(posts[index].epochKey, posts[index].postEpoch, 0, 10);
 
         posts[index].upVotes++;
     }
 
-    function newPost (
+    function newPost(
         uint256 epochKey,
         uint48 currEpoch,
         uint256[5] calldata publicSignals,
         uint256[8] calldata proof,
         string calldata context
     ) public {
-        require(verifyDataProof( publicSignals, proof ));
+        require(verifyDataProof(publicSignals, proof));
 
-        posts.push(Post(
-            epochKey,
-            currEpoch,
-            publicSignals,
-            proof,
-            context,
-            0
-        ));
+        posts.push(Post(epochKey, currEpoch, publicSignals, proof, context, 0));
 
         postCount++;
     }
 
-    function getPost(uint256 _index) public view returns(Post memory) {
+    function getPost(uint256 _index) public view returns (Post memory) {
         require(_index < postCount && postCount > 0);
         return posts[_index];
     }
 
-    function getAllPosts() public view returns(Post [] memory) {
+    function getAllPosts() public view returns (Post[] memory) {
         return posts;
     }
 
-    function getPostCount() public view returns(uint256) {
+    function getPostCount() public view returns (uint256) {
         return postCount;
     }
 
     function verifyDataProof(
         uint256[5] calldata publicSignals,
         uint256[8] calldata proof
-    ) public view returns(bool) {
-        return dataVerifier.verifyProof(
-            publicSignals,
-            proof
-        );
+    ) public view returns (bool) {
+        return dataVerifier.verifyProof(publicSignals, proof);
     }
-
 }
