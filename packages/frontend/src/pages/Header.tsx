@@ -12,14 +12,22 @@ export default () => {
     return (
         <>
             <div className="header">
-                <img src={require('../../public/logo.svg')} alt="UniRep logo" />
+                <Link to="dashboard">
+                    <img
+                        src={require('../../public/logo.svg')}
+                        alt="UniRep logo"
+                    />
+                </Link>
                 <div className="links">
-                    <div className='navigateButtons' onClick={goToForum}>
+                    <div className="navigateButtons" onClick={goToForum}>
                         Forum
                     </div>
-                    <div className='navigateButtons' onClick={() => {
-                        navigate('/governance')
-                    }}>
+                    <div
+                        className="navigateButtons"
+                        onClick={() => {
+                            navigate('/governance')
+                        }}
+                    >
                         Governance
                     </div>
                     <a

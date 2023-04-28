@@ -1,55 +1,72 @@
-.forum-container{
+.forum-container {
     border: 1px solid;
     border-color: black;
     border-radius: 5px;
-    margin-left: 75px;
-    margin-top: 50px;
-    margin-right: 75px;
-    width: 90vw;
     padding: 10px;
     height: auto;
 }
 
 h3 {
-    color:cadetblue;
+    color: cadetblue;
     margin-left: 10px;
 }
 
 .overview {
-    margin-left: 100px;
+    margin-left: 105px;
     margin-bottom: 10px;
+    padding-right: 40px;
 }
 
 .avatar-title-wrapper {
-    display: flex; 
+    display: flex;
     align-items: center;
-    margin-left: 30px; 
-  }
-  
-  .avatar {
+    margin-left: 30px;
+}
+
+.avatar {
     /* Size */
     height: 3rem;
     width: 3rem;
     margin-right: 16px; /* Add margin to separate avatar from title */
-  }
-  
-  .avatar__image {
+}
+
+.avatar__image {
     /* Size */
     height: 100%;
     width: 100%;
     object-fit: contain; /* Maintain aspect ratio */
-  }
+}
 
-  .post-time{
+.post-time {
     height: 1.5rem;
     width: 1.5rem;
-  }
+}
 
-  .post-time-positioner {
+.post-time-positioner {
     margin-left: auto;
     display: flex;
-    gap: 8px;
+    gap: 48px;
     justify-content: center;
     align-items: center;
     margin-right: 10px;
-  }
+}
+
+.post-time-positioner div:last-child {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.vote-info-container > img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.vote-info-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}

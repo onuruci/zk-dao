@@ -2,13 +2,13 @@ import React from 'react'
 import './button.css'
 
 type Props = {
-    style?: { [key: string]: string }
+    styles?: { [key: string]: string }
     loadingText?: string
     onClick?: () => void
     children: any
 }
 
-export default ({ style, loadingText, onClick, children }: Props) => {
+export default ({ styles, loadingText, onClick, children }: Props) => {
     const [loading, setLoading] = React.useState(false)
     const [error, setError] = React.useState('')
     const handleClick = async () => {
@@ -29,7 +29,7 @@ export default ({ style, loadingText, onClick, children }: Props) => {
         <div className="button-outer">
             <div
                 className="button-inner"
-                style={{ ...(style || {}) }}
+                style={{ ...(styles || {}) }}
                 onClick={handleClick}
             >
                 {!loading && !error ? children : null}
