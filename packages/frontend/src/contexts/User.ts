@@ -165,8 +165,6 @@ class User {
         const dataProof = new DataProof(publicSignals, proof, prover)
         const valid = await dataProof.verify()
 
-        console.log("Valid:     ", valid);
-
         const epochKeyProof = await this.userState.genEpochKeyProof({
             nonce: epkNonce,
         })
@@ -254,6 +252,23 @@ class User {
             proof: dataProof.proof,
             valid,
         })
+    }
+
+    async upVote(index: any) {
+        if (!this.userState) throw new Error('user state not initialized')
+
+        const data = await fetch(`${SERVER}/api/upvote`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(stringifyBigInts({
+                index
+            })),
+        }).then((r) => r.json())
+        await this.provider.waitForTransaction(data.hash)
+        await this.userState.waitForSync()
+        await this.loadData()
     }
 }
 

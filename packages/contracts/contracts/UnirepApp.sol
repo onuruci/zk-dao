@@ -22,9 +22,11 @@ contract UnirepApp {
 
     struct Post {
         uint256 epochKey;
+        uint48 postEpoch;
         uint256[5] publicSignals;
         uint256[8] proof;
         string context;
+        uint256 upVotes;
     }
 
     constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) {
@@ -72,6 +74,18 @@ contract UnirepApp {
         );
     }
 
+    function upVote(
+        uint256 index
+    ) public {
+        submitAttestation(posts[index].epochKey, 
+            posts[index].postEpoch, 
+            0, 
+            10
+        );
+
+        posts[index].upVotes++;
+    }
+
     function newPost (
         uint256 epochKey,
         uint48 currEpoch,
@@ -83,9 +97,11 @@ contract UnirepApp {
 
         posts.push(Post(
             epochKey,
+            currEpoch,
             publicSignals,
             proof,
-            context
+            context,
+            0
         ));
 
         postCount++;
