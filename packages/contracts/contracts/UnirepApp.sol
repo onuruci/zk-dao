@@ -22,8 +22,8 @@ contract UnirepApp {
 
     struct Post {
         uint256 epochKey;
-        // uint256[5] publicSignals;
-        // uint256[8] proof;
+        uint256[5] publicSignals;
+        uint256[8] proof;
         string context;
     }
 
@@ -75,16 +75,16 @@ contract UnirepApp {
     function newPost (
         uint256 epochKey,
         uint48 currEpoch,
-        // uint256[5] calldata publicSignals,
-        // uint256[8] calldata proof,
+        uint256[5] calldata publicSignals,
+        uint256[8] calldata proof,
         string calldata context
     ) public {
-        //require(verifyDataProof( publicSignals, proof ));
+        require(verifyDataProof( publicSignals, proof ));
 
         posts.push(Post(
             epochKey,
-            // publicSignals,
-            // proof,
+            publicSignals,
+            proof,
             context
         ));
 
@@ -94,6 +94,10 @@ contract UnirepApp {
     function getPost(uint256 _index) public view returns(Post memory) {
         require(_index < postCount && postCount > 0);
         return posts[_index];
+    }
+
+    function getAllPosts() public view returns(Post [] memory) {
+        return posts;
     }
 
     function getPostCount() public view returns(uint256) {

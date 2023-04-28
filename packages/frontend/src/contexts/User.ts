@@ -135,13 +135,42 @@ class User {
         await this.loadData()
     }
 
-    async newPost(epkNonce: number) {
+    async newPost(epkNonce: number, data: { [key: number]: string | number }) {
         if (!this.userState) throw new Error('user state not initialized')
+
+        const epoch = await this.userState.sync.loadCurrentEpoch()
+        const stateTree = await this.userState.sync.genStateTree(epoch)
+        const index = await this.userState.latestStateTreeLeafIndex(epoch)
+        const stateTreeProof = stateTree.createProof(index)
+        const provableData = await this.userState.getProvableData()
+        const sumFieldCount = this.userState.sync.settings.sumFieldCount
+        const values = Array(sumFieldCount).fill(0)
+        for (let [key, value] of Object.entries(data)) {
+            values[Number(key)] = value
+        }
+        const attesterId = this.userState.sync.attesterId
+        const circuitInputs = stringifyBigInts({
+            identity_secret: this.userState.id.secret,
+            state_tree_indexes: stateTreeProof.pathIndices,
+            state_tree_elements: stateTreeProof.siblings,
+            data: provableData,
+            epoch: epoch,
+            attester_id: attesterId,
+            value: values,
+        })
+        const { publicSignals, proof } = await prover.genProofAndPublicSignals(
+            'dataProof',
+            circuitInputs
+        )
+        const dataProof = new DataProof(publicSignals, proof, prover)
+        const valid = await dataProof.verify()
+
+        console.log("Valid:     ", valid);
 
         const epochKeyProof = await this.userState.genEpochKeyProof({
             nonce: epkNonce,
         })
-        const data = await fetch(`${SERVER}/api/newPost`, {
+        const dat = await fetch(`${SERVER}/api/newPost`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
@@ -150,10 +179,12 @@ class User {
                 stringifyBigInts({
                     publicSignals: epochKeyProof.publicSignals,
                     proof: epochKeyProof.proof,
+                    repSignals: dataProof.publicSignals,
+                    repProof: dataProof.proof
                 })
             ),
         }).then((r) => r.json())
-        await this.provider.waitForTransaction(data.hash)
+        await this.provider.waitForTransaction(dat.hash)
         await this.userState.waitForSync()
         await this.loadData()
     }
@@ -206,6 +237,16 @@ class User {
             'dataProof',
             circuitInputs
         )
+        const dataProof = new DataProof(publicSignals, proof, prover)
+        const valid = await dataProof.verify()
+        return stringifyBigInts({
+            publicSignals: dataProof.publicSignals,
+            proof: dataProof.proof,
+            valid,
+        })
+    }
+
+    async proveOutput(publicSignals: any, proof: any) {
         const dataProof = new DataProof(publicSignals, proof, prover)
         const valid = await dataProof.verify()
         return stringifyBigInts({

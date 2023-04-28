@@ -40,11 +40,7 @@ export default observer(() => {
         proof: [],
         valid: false,
     })
-    const [posts, setPosts] = React.useState<[Post]>([
-        {
-            context: ""
-        }
-    ]);
+    const [posts, setPosts] = React.useState<any>();
 
     const consoleLogPostCount = async () => {
         const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
@@ -72,8 +68,9 @@ export default observer(() => {
     const getPosts = async () => {
         const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
 
-        const posts: any = await appContract.getPost(0);
+        const posts: any = await appContract.getAllPosts();
         console.log("Posts:    ", posts);
+        setPosts([...posts]);
     }
 
     React.useEffect(() => {
@@ -282,9 +279,9 @@ export default observer(() => {
                                 ) {
                                     throw new Error('Needs transition')
                                 }
-                                await userContext.newPost(
-                                    reqInfo.nonce ?? 0
-                                )
+                                // await userContext.newPost(
+                                //     reqInfo.nonce ?? 0
+                                // )
                             }}
                         >
                             New Post
@@ -299,8 +296,28 @@ export default observer(() => {
                         </Button>
 
                         {
-                            posts.map(p => {
-                                return p.context;
+                            posts.length > 0 && posts.map((p: any, i: number) => {
+
+                                return <div key={i}>
+                                    <div>
+                                        EpochKey: {p.epochKey.toString()}
+                                    </div>
+                                    <div>
+                                        Min Reputation: {p.publicSignals[1].toString()}
+                                    </div>
+                                    {/* {
+                                        proofRes.valid ?
+                                            <div>
+                                                Valid
+                                            </div> :
+                                            <div>
+                                                Not Valid
+                                            </div>
+                                    } */}
+
+                                </div>;
+                                //console.log(proofRes);
+
                             })
                         }
                     </div>
@@ -361,6 +378,19 @@ export default observer(() => {
                                 }}
                             >
                                 Generate Proof
+                            </Button>
+                        </div>
+                        <div style={{ margin: '20px 0 20px' }}>
+                            <Button
+                                onClick={async () => {
+                                    const proof = await userContext.newPost(
+                                        reqInfo.nonce ?? 0,
+                                        proveData
+                                    )
+                                    console.log(proof);
+                                }}
+                            >
+                                New Post
                             </Button>
                         </div>
                         {repProof.proof.length ? (
