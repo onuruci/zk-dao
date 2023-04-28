@@ -6,13 +6,18 @@ import Tooltip from '../components/Tooltip'
 import Post from '../components/Post'
 import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
 import { ethers } from 'ethers'
+import { I_POST, I_COMMENT } from './types'
 
 import User from '../contexts/User'
 
-const APP_ADDRESS = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
-const ETH_PROVIDER_URL = 'http://localhost:8545'
+const APP_ADDRESS = '0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0'
+const ETH_PROVIDER_URL = 'http://127.0.0.1:8545/'
 
-const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi, new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL))
+const appContract = new ethers.Contract(
+    APP_ADDRESS,
+    UNIREP_APP.abi,
+    new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL)
+)
 
 type ReqInfo = {
     nonce: number
@@ -39,13 +44,13 @@ export default observer(() => {
         proof: [],
         valid: false,
     })
-    const [posts, setPosts] = React.useState<any>();
+
+    const [posts, setPosts] = React.useState<any>()
 
     const consoleLogPostCount = async () => {
+        const postCount: any = await appContract.postCount()
 
-        const postCount: any = await appContract.postCount();
-
-        console.log(postCount);
+        console.log(postCount)
     }
 
     const updateTimer = () => {
@@ -64,9 +69,9 @@ export default observer(() => {
     }
 
     const getPosts = async () => {
-        const posts: [] = await appContract.getAllPosts();
-        let arr = posts.slice().reverse();
-        setPosts([...arr]);
+        const posts: [] = await appContract.getAllPosts()
+        let arr = posts.slice().reverse()
+        setPosts([...arr])
     }
 
     React.useEffect(() => {
@@ -79,6 +84,11 @@ export default observer(() => {
         getPosts()
     }, [])
 
+    const [post, setPost] = React.useState<I_POST>({
+        context: '',
+        provedReputation: 0,
+    })
+
     if (!userContext.userState) {
         return <div className="container">Loading...</div>
     }
@@ -86,6 +96,7 @@ export default observer(() => {
     return (
         <div>
             <h1>Dashboard</h1>
+
             <div className="container">
                 <div className="info-container">
                     <div className="info-item">
@@ -171,196 +182,59 @@ export default observer(() => {
                         }
                     })}
                 </div>
+                <div>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <form className="post-form">
+                            {Object.keys(post).map((key, index) => (
+                                <div
+                                    className={`post-field-container ${
+                                        index === 1
+                                            ? 'last-post-field'
+                                            : 'not-last'
+                                    }`}
+                                >
+                                    <label htmlFor={key}>{key}</label>
+                                    <input
+                                        onChange={(e) =>
+                                            setPost({
+                                                ...post,
+                                                [key]: e.target.value,
+                                            })
+                                        }
+                                        id={key}
+                                        name={key}
+                                        type="text"
+                                    />
+                                </div>
+                            ))}
 
-                <div style={{ display: 'flex' }}>
-                    <div className="action-container">
-                        <div className="icon">
-                            <h2>Change Data</h2>
-                            <Tooltip text="You can request changes to data here. The demo attester will freely change your data." />
-                        </div>
-                        <div
-                            style={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                justifyContent: 'flex-start',
-                            }}
-                        >
-                            {Array(
-                                userContext.userState.sync.settings.fieldCount
-                            )
-                                .fill(0)
-                                .map((_, i) => {
-                                    return (
-                                        <div key={i} style={{ margin: '4px' }}>
-                                            <p>
-                                                Data {i} ({fieldType(i)})
-                                            </p>
-                                            <input
-                                                value={reqData[i] ?? ''}
-                                                onChange={(event) => {
-                                                    if (
-                                                        !/^\d*$/.test(
-                                                            event.target.value
-                                                        )
-                                                    )
-                                                        return
-                                                    setReqData(() => ({
-                                                        ...reqData,
-                                                        [i]: event.target.value,
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                        </div>
-                        <div className="icon">
-                            <p style={{ marginRight: '8px' }}>
-                                Epoch key nonce
-                            </p>
-                            <Tooltip text="Epoch keys are short lived identifiers for a user. They can be used to receive data and are valid only for 1 epoch." />
-                        </div>
-                        <select
-                            value={reqInfo.nonce ?? 0}
-                            onChange={(event) => {
-                                setReqInfo((v) => ({
-                                    ...v,
-                                    nonce: Number(event.target.value),
-                                }))
-                            }}
-                        >
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            {/* TODO: <option value="2">2</option> */}
-                        </select>
-                        <p style={{ fontSize: '12px' }}>
-                            Requesting data with epoch key:
-                        </p>
-                        <p
-                            style={{
-                                maxWidth: '650px',
-                                wordBreak: 'break-all',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}
-                        >
-                            {userContext.epochKey(reqInfo.nonce ?? 0)}
-                        </p>
-
-                        <Button
-                            onClick={async () => {
-                                if (
-                                    userContext.userState &&
-                                    userContext.userState.sync.calcCurrentEpoch() !==
-                                    (await userContext.userState.latestTransitionedEpoch())
-                                ) {
-                                    throw new Error('Needs transition')
-                                }
-                                await userContext.requestData(
-                                    reqData,
-                                    reqInfo.nonce ?? 0
-                                )
-                                setReqData({})
-                            }}
-                        >
-                            Attest
-                        </Button>
-
-                        <Button
-                            onClick={async () => {
-                                consoleLogPostCount();
-                            }}
-                        >
-                            LogPostCount
-                        </Button>
-
-                        {
-                            posts && posts.map((p: any, i: number) => {
-
-                                return <Post
-                                    epochKey={p.epochKey}
-                                    postEpoch={p.postEpoch}
-                                    currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
-                                    minRep={p.publicSignals[1].toString()}
-                                    publicSignals={p.publicSignals}
-                                    proof={p.proof}
-                                    index={i}
-                                />;
-                            })
-                        }
-                    </div>
-
-
-                    <div className="action-container transition">
-                        <div className="icon">
-                            <h2>User State Transition</h2>
-                            <Tooltip
-                                text={`The user state transition allows a user to insert a state tree leaf into the latest epoch. The user sums all the data they've received in the past and proves it in ZK.`}
-                            />
-                        </div>
-                        <Button onClick={() => userContext.stateTransition()}>
-                            Transition
-                        </Button>
-                    </div>
-
-                    <div className="action-container">
-                        <div className="icon">
-                            <h2>Prove Data</h2>
-                            <Tooltip text="Users can prove they control some amount of data without revealing exactly how much they control." />
-                        </div>
-                        {Array(
-                            userContext.userState.sync.settings.sumFieldCount
-                        )
-                            .fill(0)
-                            .map((_, i) => {
-                                return (
-                                    <div key={i} style={{ margin: '4px' }}>
-                                        <p>
-                                            Data {i} ({fieldType(i)})
-                                        </p>
-                                        <input
-                                            value={proveData[i] ?? '0'}
-                                            onChange={(event) => {
-                                                if (
-                                                    !/^\d*$/.test(
-                                                        event.target.value
-                                                    )
-                                                )
-                                                    return
-                                                setProveData(() => ({
-                                                    ...proveData,
-                                                    [i]: event.target.value,
-                                                }))
-                                            }}
-                                        />
-                                    </div>
-                                )
-                            })}
-                        <div style={{ margin: '20px 0 20px' }}>
-                            <Button
-                                onClick={async () => {
-                                    const proof = await userContext.proveData(
-                                        proveData
-                                    )
-                                    setRepProof(proof)
-                                }}
-                            >
-                                Generate Proof
-                            </Button>
-                        </div>
-                        <div style={{ margin: '20px 0 20px' }}>
                             <Button
                                 onClick={async () => {
                                     const proof = await userContext.newPost(
                                         reqInfo.nonce ?? 0,
-                                        proveData
+                                        proveData,
+                                        post
                                     )
-                                    console.log(proof);
+                                    getPosts()
                                 }}
                             >
                                 New Post
                             </Button>
+                        </form>
+                        <div className="action-container transition">
+                            <div className="icon">
+                                <h2>User State Transition</h2>
+                                <Tooltip
+                                    text={`The user state transition allows a user to insert a state tree leaf into the latest epoch. The user sums all the data they've received in the past and proves it in ZK.`}
+                                />
+                            </div>
+                            <Button
+                                onClick={() => userContext.stateTransition()}
+                            >
+                                Transition
+                            </Button>
                         </div>
+
                         {repProof.proof.length ? (
                             <>
                                 <div>
@@ -372,13 +246,9 @@ export default observer(() => {
                                             : repProof.valid.toString()}
                                     </span>
                                 </div>
-                                {
-                                    repProof.proof.length
-                                }
+                                {repProof.proof.length}
                                 Public Signals
-                                {
-                                    repProof.publicSignals.length
-                                }
+                                {repProof.publicSignals.length}
                                 <textarea
                                     readOnly
                                     value={JSON.stringify(repProof, null, 2)}
@@ -386,8 +256,26 @@ export default observer(() => {
                             </>
                         ) : null}
                     </div>
+
+                    <div className="posts-container">
+                        {posts?.length > 0 &&
+                            posts.map((p: any, i: number) => {
+                                console.log(p)
+                                return (
+                                    <Post
+                                        epochKey={p.epochKey}
+                                        minRep={p.publicSignals[1].toString()}
+                                        publicSignals={p.publicSignals}
+                                        proof={p.proof}
+                                        context={p.context}
+                                        currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
+                                        postEpoch={p.postEpoch}
+                                    />
+                                )
+                            })}
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     )
 })

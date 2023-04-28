@@ -1,7 +1,7 @@
 import { spawn, exec } from 'child_process'
 import fetch from 'node-fetch'
 console.log('Starting a hardhat node...')
-const providerURL = `http://localhost:8545`
+const providerURL = `http://127.0.0.1:8545/`
 const serverURL = `http://localhost:8000`
 const frontendURL = `http://localhost:3000`
 
