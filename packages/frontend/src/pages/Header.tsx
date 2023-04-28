@@ -1,19 +1,27 @@
 import React from 'react'
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet, Link, useNavigate } from 'react-router-dom'
 import './header.css'
 
 export default () => {
+    const navigate = useNavigate()
+
+    const goToForum = () => {
+        navigate('/forum')
+    }
+
     return (
         <>
             <div className="header">
                 <img src={require('../../public/logo.svg')} alt="UniRep logo" />
                 <div className="links">
-                    <a href="https://developer.unirep.io/" target="blank">
-                        Docs
-                    </a>
-                    <a href="https://github.com/Unirep" target="blank">
-                        GitHub
-                    </a>
+                    <div className='navigateButtons' onClick={goToForum}>
+                        Forum
+                    </div>
+                    <div className='navigateButtons' onClick={() => {
+                        navigate('/governance')
+                    }}>
+                        Governance
+                    </div>
                     <a
                         href="https://discord.com/invite/VzMMDJmYc5"
                         target="blank"
