@@ -24,7 +24,7 @@ export default observer(() => {
     const [post, setPost] = useState<I_POST>({
         description: '',
         title: '',
-        provedReputation: 0,
+        provedReputation: 10,
     })
 
     const [posts, setPosts] = useState<I_POST[]>([])
@@ -52,42 +52,55 @@ export default observer(() => {
     return (
         <div className="forum-wrapper">
             <div className="forum-upper-side">
-                <form className="create-post">
-                    <input
-                        className="create-post-title"
-                        type="text"
-                        placeholder="Title..."
-                        id="title"
-                        name="title"
-                        onChange={(e) =>
-                            setPost({ ...post, title: e.target.value })
-                        }
-                    />
-                    <textarea
-                        className="create-post-context"
-                        placeholder="What do you think?"
-                        id="description"
-                        name="description"
-                        onChange={(e) =>
-                            setPost({ ...post, description: e.target.value })
-                        }
-                    />
-
-                    <img
-                        onClick={handleCreatePost}
-                        className="submit-button-image"
-                        src={postButton}
-                    />
-                </form>
-                <div className="details-wrapper">
+                <div>
                     <Button
-                        styles={{ padding: '12px', 'font-size': '16px' }}
+                        styles={{
+                            padding: '12px 0',
+                            'font-size': '16px',
+                            width: '100%',
+                            'background-color': 'white',
+                            border: '1px solid black',
+                            'border-radius': '12px',
+                        }}
                         onClick={() => userContext.stateTransition()}
                         loadingText="Updating epoch..."
                     >
                         Update Epoch
                     </Button>
+                    <form className="create-post">
+                        <input
+                            className="create-post-title"
+                            type="text"
+                            placeholder="Title..."
+                            id="title"
+                            name="title"
+                            onChange={(e) =>
+                                setPost({ ...post, title: e.target.value })
+                            }
+                        />
+                        <textarea
+                            className="create-post-context"
+                            placeholder="What do you think?"
+                            id="description"
+                            name="description"
+                            onChange={(e) =>
+                                setPost({
+                                    ...post,
+                                    description: e.target.value,
+                                })
+                            }
+                        />
+
+                        <Button
+                            styles={{ 'margin-left': 'auto' }}
+                            onClick={handleCreatePost}
+                            loadingText="Posting..."
+                        >
+                            Post
+                        </Button>
+                    </form>
                 </div>
+                <div className="details-wrapper">hello world</div>
             </div>
             <div className="post-list">
                 {posts
