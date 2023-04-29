@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 import {Unirep} from '@unirep/contracts/Unirep.sol';
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 // Uncomment this line to use console.log
 import 'hardhat/console.sol';
@@ -12,7 +13,7 @@ interface IVerifier {
     ) external view returns (bool);
 }
 
-contract ZKComm {
+contract ZKComm is ERC20 {
     Unirep public unirep;
     IVerifier internal dataVerifier;
 
@@ -38,6 +39,7 @@ contract ZKComm {
         uint256 id;
         string title;
         string description;
+        uint256 tokenDemands;
         uint256 minRepToVote;
         uint256 approvals;
         uint256 rejects;
@@ -54,12 +56,14 @@ contract ZKComm {
     event UpVote(uint256 _index, uint256 _atstVal);
     event ProposalVote(uint256 _index, uint256 _vote);
 
-    constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) {
+    constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) ERC20("Reputation", "REP") {
         unirep = _unirep;
 
         dataVerifier = _dataVerifier;
 
         unirep.attesterSignUp(_epochLength);
+
+        _mint(address(this), 100000 * 10 ** 18);
     }
 
     // sign up users in this app
@@ -68,14 +72,6 @@ contract ZKComm {
         uint256[8] memory proof
     ) public {
         unirep.userSignUp(publicSignals, proof);
-    }
-
-    function upVote(uint256 index) public {
-        uint256 atstVal = 10;
-
-        unirep.attest(posts[index].epochKey, posts[index].postEpoch, 0, atstVal);
-        posts[index].upVotes++;
-        emit UpVote(index, atstVal);
     }
 
     function newProposal(
@@ -96,6 +92,7 @@ contract ZKComm {
             proposalCount,
             title,
             description,
+            1000,
             minRepToVote,
             0,
             0,
@@ -121,7 +118,7 @@ contract ZKComm {
         require(_vote >= 0 && _vote <= 2);
         require(_index < proposalCount && proposalCount > 0);
         require(verifyDataProof(publicSignals, proof));
-        // require proved reputation count to be >= proposal.minRepToVote
+        require(publicSignals[0] >= proposals[_index].minRepToVote);
 
         // get epoch key and label it as used to prevent duplicate voting
 
@@ -137,6 +134,25 @@ contract ZKComm {
         }
 
         emit ProposalVote(_index, _vote);
+    }
+
+    function closeProposal(
+        uint256 _index
+    ) public {
+        proposals[_index].isActive = false;
+
+        if(proposals[_index].approvals > proposals[_index].rejects) {
+            unirep.attest(proposals[_index].epochKey, proposals[_index].currEpoch, 1, proposals[_index].tokenDemands);
+        }
+    }
+
+    function spendTokens(
+        uint256[5] calldata publicSignals,
+        uint256[8] calldata proof,
+        address toSend
+    ) public {
+        require(verifyDataProof(publicSignals, proof));
+        transfer(toSend, publicSignals[2]);
     }
 
     function newPost(
@@ -164,6 +180,15 @@ contract ZKComm {
         postCount++;
 
         emit NewPost();
+    }
+
+    function upVote(uint256 index) public {
+        uint256 atstVal = 100;
+
+        unirep.attest(posts[index].epochKey, posts[index].postEpoch, 0, atstVal);
+
+        posts[index].upVotes++;
+        emit UpVote(index, atstVal);
     }
 
     function getPost(uint256 _index) public view returns (Post memory) {
@@ -194,9 +219,6 @@ contract ZKComm {
         return dataVerifier.verifyProof(publicSignals, proof);
     }
 }
-
-
-// Send proposals properly
 
 // Vote on proposals
 
