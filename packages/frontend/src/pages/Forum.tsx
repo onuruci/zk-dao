@@ -11,6 +11,8 @@ import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/
 
 import './forum.css'
 import Button from '../components/Button'
+import Tooltip from '../components/Tooltip'
+import Timer from '../components/Timer'
 
 const APP_CONTRACT = new ethers.Contract(
     APP_ADDRESS,
@@ -24,7 +26,7 @@ export default observer(() => {
     const [post, setPost] = useState<I_POST>({
         description: '',
         title: '',
-        provedReputation: 10,
+        provedReputation: 0,
     })
 
     const [posts, setPosts] = useState<I_POST[]>([])
@@ -68,16 +70,33 @@ export default observer(() => {
                         Update Epoch
                     </Button>
                     <form className="create-post">
-                        <input
-                            className="create-post-title"
-                            type="text"
-                            placeholder="Title..."
-                            id="title"
-                            name="title"
-                            onChange={(e) =>
-                                setPost({ ...post, title: e.target.value })
-                            }
-                        />
+                        <div>
+                            <input
+                                className="create-post-title"
+                                type="text"
+                                placeholder="Title..."
+                                id="title"
+                                name="title"
+                                onChange={(e) =>
+                                    setPost({ ...post, title: e.target.value })
+                                }
+                            />
+                            <input
+                                className="reputation-count"
+                                type="number"
+                                placeholder="With Karma..."
+                                id="reputation"
+                                name="reputation"
+                                onChange={(e) =>
+                                    setPost({
+                                        ...post,
+                                        provedReputation: parseInt(
+                                            e.target.value
+                                        ),
+                                    })
+                                }
+                            />
+                        </div>
                         <textarea
                             className="create-post-context"
                             placeholder="What do you think?"
@@ -100,7 +119,69 @@ export default observer(() => {
                         </Button>
                     </form>
                 </div>
-                <div className="details-wrapper">hello world</div>
+                <div className="info-container">
+                    <Timer />
+
+                    <hr />
+
+                    <div className="info-item">
+                        <h3>Latest Data</h3>
+                        <Tooltip text="This is all the data the user has received. The user cannot prove data from the current epoch." />
+                    </div>
+                    {userContext.data.slice(0, 1).map((data, i) => {
+                        if (i < userContext.sumFieldCount) {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Latest Reputation</div>
+                                    <div className="stat">
+                                        {(data || 0).toString()}
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Provable Reputation</div>
+                                    <div className="stat">
+                                        {(
+                                            data % BigInt(2 ** 206) || 0
+                                        ).toString()}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    })}
+
+                    <br />
+
+                    <div className="info-item">
+                        <h3>Provable Data</h3>
+                        <Tooltip text="This is the data the user has received up until their last transitioned epoch. This data can be proven in ZK." />
+                    </div>
+                    {userContext.provableData.slice(0, 1).map((data, i) => {
+                        if (i < userContext.sumFieldCount) {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Data {i}</div>
+                                    <div className="stat">
+                                        {(data || 0).toString()}
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Data {i}</div>
+                                    <div className="stat">
+                                        {(
+                                            data % BigInt(2 ** 206) || 0
+                                        ).toString()}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    })}
+                </div>
             </div>
             <div className="post-list">
                 {posts

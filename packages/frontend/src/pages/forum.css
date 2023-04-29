@@ -17,6 +17,12 @@
     background-color: white;
 }
 
+.create-post > div:first-child {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: row;
+}
+
 .create-post-title {
     text-align: start;
     margin: 5px;
@@ -37,7 +43,7 @@
     text-align: start;
     padding: 12px;
     font-size: 16px;
-    height: 100px;
+    height: 225px;
 }
 
 .submit-button-image {
@@ -61,11 +67,17 @@
     gap: 32px;
 }
 
-.forum-upper-side div:first-child {
+.forum-upper-side > div:first-child {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     gap: 12px;
+}
+
+.reputation-count {
+    background-color: #dbefff;
+    border: 1px solid black;
+    border-radius: 4px;
 }
 
 .details-wrapper {
