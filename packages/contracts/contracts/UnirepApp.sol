@@ -143,10 +143,10 @@ contract ZKComm is ERC20 {
 
         if (_vote == 0) {
             // reject
-            proposals[_index].rejects++;
+            proposals[_index].approvals++;
         } else if (_vote == 1) {
             // approve
-            proposals[_index].approvals++;
+            proposals[_index].rejects++;
         } else if (_vote == 2) {
             // abstein
             proposals[_index].abstein++;

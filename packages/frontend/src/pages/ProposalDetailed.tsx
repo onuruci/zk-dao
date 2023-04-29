@@ -17,8 +17,19 @@ const APP_CONTRACT = new ethers.Contract(
 )
 
 export const ProposalDetailed = () => {
+    const [widths, setWidths] = useState([0, 0, 0])
+
+    const voteEnum = {
+        0: 'yes',
+        1: 'no',
+        2: 'abstein',
+    }
+
     const { proposalId } = useParams()
+
     const userContext = useContext(User)
+
+    const [voteValue, setVoteValue] = useState(-1)
 
     const [proposalInfo, setProposalInfo] = useState<I_PROPOSAL>()
 
@@ -31,6 +42,29 @@ export const ProposalDetailed = () => {
     useEffect(() => {
         getProposalInfo()
     }, [])
+
+    useEffect(() => {
+        if (!proposalInfo) {
+            return
+        }
+        const yes = parseInt(proposalInfo?.approvals!.toString()),
+            no = parseInt(proposalInfo?.rejects!.toString()),
+            abstein = parseInt(proposalInfo?.abstein!.toString())
+
+        const sum = yes! + no! + abstein!
+
+        console.log(sum, yes, no, abstein)
+
+        const newWidths = [
+            (yes! / sum) * 200,
+            (no! / sum) * 200,
+            (abstein! / sum) * 200,
+        ]
+
+        setWidths(newWidths)
+    }, [proposalInfo])
+
+    console.log(userContext.data)
 
     return (
         <div className="detailed-proposal-outer-wrapper">
@@ -70,16 +104,38 @@ export const ProposalDetailed = () => {
                     <section className="voting-section">
                         <div className="voting-section-title">Vote</div>
                         <div className="voting-option-list">
-                            <button className="vote-selection vote-yes">
+                            <button
+                                onClick={() => setVoteValue(0)}
+                                className="vote-selection vote-yes"
+                            >
                                 Yes
                             </button>
-                            <button className="vote-selection vote-no">
+                            <button
+                                onClick={() => setVoteValue(1)}
+                                className="vote-selection vote-no"
+                            >
                                 No
                             </button>
-                            <button className="vote-selection vote-abstain">
+                            <button
+                                onClick={() => setVoteValue(2)}
+                                className="vote-selection vote-abstain"
+                            >
                                 Abstain
                             </button>
-                            <button className='vote-submit-button'>Submit Your Vote</button>
+                            <button
+                                onClick={() =>
+                                    voteValue >= 0 &&
+                                    userContext.sendVoteToProposal(
+                                        0,
+                                        proposalInfo?.minRepToVote!,
+                                        parseInt(proposalId!),
+                                        voteValue
+                                    )
+                                }
+                                className="vote-submit-button"
+                            >
+                                Submit Your Vote
+                            </button>
                         </div>
                     </section>
                 </div>
@@ -146,6 +202,28 @@ export const ProposalDetailed = () => {
                                 )
                             }
                         })}
+                    </div>
+                    <div className="vote-results">
+                        <div>Results</div>
+                        <div className="result-selections-wrapper">
+                            {widths.map((w, i) => (
+                                <div className="selection-outer-wrapper">
+                                    <div className="selection-wrapper">
+                                        <div></div>
+                                        <div
+                                            style={{
+                                                width: w + 'px',
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <div>
+                                        {(w / 2).toString().slice(0, 4)}
+                                        {'% '}
+                                        {voteEnum[i as keyof typeof voteEnum]}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
