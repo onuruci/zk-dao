@@ -10,7 +10,8 @@ export default () => {
             <div className="header">
                 <Link to="forum">
                     <img
-                        src={require('../../public/logo.svg')}
+                        className='logo-header'
+                        src={require('../img/logo.svg')}
                         alt="UniRep logo"
                     />
                 </Link>
