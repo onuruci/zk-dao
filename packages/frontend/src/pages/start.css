@@ -11,6 +11,19 @@ p {
     z-index: 10;
 }
 
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    object-fit: cover;
+  }
+  
+
 .attester {
     display: flex;
     align-items: center;
@@ -21,13 +34,20 @@ p {
 }
 
 .join {
+    display: flex;
     width: 260px;
     margin: 20px 0;
     text-align: center;
+    justify-content: center;
+}
+
+.join-button {
+    position: absolute;
+    right: 200px;
+    bottom: 100px;
+
 }
 
 .bg {
-    position: absolute;
-    right: 0px;
     z-index: 0;
 }

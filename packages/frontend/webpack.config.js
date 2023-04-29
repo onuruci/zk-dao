@@ -62,6 +62,18 @@ module.exports = (env) => ({
                 },
             },
             {
+                test: /\.(mp4|webm)$/,
+                use: [
+                  {
+                    loader: "file-loader",
+                    options: {
+                      name: "[name].[ext]",
+                      outputPath: "videos/",
+                    },
+                  },
+                ],
+              },
+            {
                 test: /\.(png|jpg|gif|svg|ico)$/i,
                 use: [
                     {
