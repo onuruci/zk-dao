@@ -15,17 +15,9 @@ const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi)
 export default (app: Express, db: DB, synchronizer: Synchronizer) => {
     app.post('/api/newPost', async (req, res) => {
         try {
-            console.log('NewPost Entered')
-            console.log('req bodyt: ')
-            console.log(req.body)
             const { publicSignals, proof, repSignals, repProof, post } =
                 req.body
-
-            console.log('post is here: ')
             console.log(post)
-            const context = 'This is a newPost'
-
-            console.log('APP ADDRESS: ', APP_ADDRESS)
 
             const epochKeyProof = new EpochKeyProof(
                 publicSignals,
@@ -55,13 +47,6 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
                 return
             }
 
-            console.log('App Contract')
-
-            console.log(repSignals.length)
-            console.log(repProof.length)
-            console.log(repProof)
-            console.log(post.context)
-
             const calldata = appContract.interface.encodeFunctionData(
                 'newPost',
                 //[epochKeyProof.epochKey, epoch, publicSignals, proof, context]
@@ -70,7 +55,8 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
                     epoch,
                     repSignals,
                     repProof,
-                    post.context,
+                    post.title,
+                    post.description,
                 ]
             )
             console.log('Hash entered')

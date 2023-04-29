@@ -1,61 +1,106 @@
-import React, {useState, useEffect} from "react";
-import avatar from "../img/ObtLogo.png";
-import postButton from "../img/svg.svg"
-import PostCard from "../components/PostCard";
-
+import React, { useState, useEffect, useContext } from 'react'
+import avatar from '../img/ObtLogo.png'
+import postButton from '../img/svg.svg'
+import PostCard from '../components/PostCard'
+import User from '../contexts/User'
+import { I_POST } from './types'
+import { ethers } from 'ethers'
 import { observer } from 'mobx-react-lite'
+import { APP_ADDRESS, ETH_PROVIDER_URL } from './constants'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
+
 import './forum.css'
+import Button from '../components/Button'
+
+const APP_CONTRACT = new ethers.Contract(
+    APP_ADDRESS,
+    UNIREP_APP.abi,
+    new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL)
+)
 
 export default observer(() => {
+    const userContext = React.useContext(User)
 
-    
-    const [postContext, setPostContext] = useState({title: "",description: ""});
+    const [post, setPost] = useState<I_POST>({
+        description: '',
+        title: '',
+        provedReputation: 0,
+    })
 
-    const handleChange = (event: any) => {
-        const { name, value} = event.target
-        setPostContext((prevPostContext) => ({ ...prevPostContext, [name]: value }));
+    const [posts, setPosts] = useState<I_POST[]>([])
+
+    useEffect(() => {
+        updatePosts()
+    }, [])
+
+    const updatePosts = async () => {
+        const posts: [] = await APP_CONTRACT.getAllPosts()
+
+        console.log(posts)
+        setPosts([...posts])
     }
 
-    const submitData = (event: any) => {
-        event.preventDefault()
+    async function handleCreatePost() {
+        try {
+            const proof = await userContext.newPost(0, post)
+            updatePosts()
+        } catch (err) {
+            console.error(err)
+        }
     }
 
-    interface Post {
-        id: number;
-        title: string;
-        description: string;
-      }
-      
-      const [posts, setPosts] = useState<Array<Post>>([]);
-      
-      useEffect(() => {
-        // Fetch your posts from your backend or blockchain here
-        // For this example, I'm using a hardcoded list
-        const fetchedPosts: Post[] = [
-          { id: 0, title: "Post 1", description: "Description 1" },
-          { id: 1, title: "Post 2", description: "Description 2" },
-        ];
-        setPosts(fetchedPosts);
-      }, []);
-
-    return(
+    return (
         <div className="forum-wrapper">
-            <div className="create-post">
-                <form>
-                    <input className="create-post-title" type="text" placeholder="Title..." id="title" name="title" value={postContext.title} onChange={handleChange} />
-                    <br/>
-                    <input className="create-post-context" type="text" placeholder="What do you think?" id="description" name="description" value={postContext.description} onChange={handleChange} />
-                    <br/>
-                    <div className="submit-button" onClick={submitData}>
-                        <img className="submit-button-image" src={postButton} />
-                    </div>
-                </form>
+            <div className="forum-upper-side">
+                <form className="create-post">
+                    <input
+                        className="create-post-title"
+                        type="text"
+                        placeholder="Title..."
+                        id="title"
+                        name="title"
+                        onChange={(e) =>
+                            setPost({ ...post, title: e.target.value })
+                        }
+                    />
+                    <textarea
+                        className="create-post-context"
+                        placeholder="What do you think?"
+                        id="description"
+                        name="description"
+                        onChange={(e) =>
+                            setPost({ ...post, description: e.target.value })
+                        }
+                    />
 
+                    <img
+                        onClick={handleCreatePost}
+                        className="submit-button-image"
+                        src={postButton}
+                    />
+                </form>
+                <div className="details-wrapper">
+                    <Button
+                        styles={{ padding: '12px', 'font-size': '16px' }}
+                        onClick={() => userContext.stateTransition()}
+                        loadingText="Updating epoch..."
+                    >
+                        Update Epoch
+                    </Button>
+                </div>
             </div>
-            {posts.map((post) => (
-                <PostCard key={post.id} postId={post.id} title={post.title} description={post.description}/>
-      ))}
+            <div className="post-list">
+                {posts
+                    .slice(0)
+                    .reverse()
+                    .map((p, i) => (
+                        <PostCard
+                            postInfo={p}
+                            currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
+                            index={posts.length - i - 1}
+                        />
+                    ))}
+            </div>
         </div>
     )
-
-}  )
+})

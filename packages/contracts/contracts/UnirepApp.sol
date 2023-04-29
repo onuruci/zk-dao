@@ -24,7 +24,8 @@ contract UnirepApp {
         uint48 postEpoch;
         uint256[5] publicSignals;
         uint256[8] proof;
-        string context;
+        string title;
+        string description;
         uint256 upVotes;
         uint256 downVotes;
     }
@@ -90,11 +91,21 @@ contract UnirepApp {
         uint48 currEpoch,
         uint256[5] calldata publicSignals,
         uint256[8] calldata proof,
-        string calldata context
+        string calldata title,
+        string calldata description
     ) public {
         require(verifyDataProof(publicSignals, proof));
         posts.push(
-            Post(epochKey, currEpoch, publicSignals, proof, context, 0, 0)
+            Post(
+                epochKey,
+                currEpoch,
+                publicSignals,
+                proof,
+                title,
+                description,
+                0,
+                0
+            )
         );
 
         postCount++;

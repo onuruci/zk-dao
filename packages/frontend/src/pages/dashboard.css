@@ -34,12 +34,6 @@ select {
     font-weight: 600;
 }
 
-textarea {
-    width: 100%;
-    height: 147px;
-    margin-top: 10px;
-}
-
 .container {
     display: flex;
     flex-direction: row;

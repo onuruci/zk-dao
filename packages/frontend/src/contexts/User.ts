@@ -136,13 +136,9 @@ class User {
         await this.loadData()
     }
 
-    async newPost(
-        epkNonce: number,
-        data: { [key: number]: string | number },
-        post: I_POST
-    ) {
+    async newPost(epkNonce: number, post: I_POST) {
         if (!this.userState) throw new Error('user state not initialized')
-
+        console.log(post)
         const epoch = await this.userState.sync.loadCurrentEpoch()
         const stateTree = await this.userState.sync.genStateTree(epoch)
         const index = await this.userState.latestStateTreeLeafIndex(epoch)
@@ -276,9 +272,11 @@ class User {
             headers: {
                 'content-type': 'application/json',
             },
-            body: JSON.stringify(stringifyBigInts({
-                index
-            })),
+            body: JSON.stringify(
+                stringifyBigInts({
+                    index,
+                })
+            ),
         }).then((r) => r.json())
         await this.provider.waitForTransaction(data.hash)
         await this.userState.waitForSync()

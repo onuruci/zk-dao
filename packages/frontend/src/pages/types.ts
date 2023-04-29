@@ -7,10 +7,14 @@ export interface I_COMMENT {
 }
 
 export interface I_POST {
-    context: string
-    postOwner?: bigint
-    upvote?: number
-    downvote?: number
+    description: string
+    epochKey?: bigint
+    upVotes?: number
+    downVotes?: number
     comments?: Comment
     provedReputation: number
+    title: string
+    publicSignals?: bigint[]
+    postEpoch?: number
+    proof?: bigint[]
 }

@@ -36,7 +36,7 @@ export default observer(() => {
     const [reqData, setReqData] = React.useState<{
         [key: number]: number | string
     }>({})
-    const [reqInfo, setReqInfo] = React.useState<ReqInfo>({ nonce: 0 })
+
     const [proveData, setProveData] = React.useState<{
         [key: number]: number | string
     }>({})
@@ -71,8 +71,9 @@ export default observer(() => {
     }, [])
 
     const [post, setPost] = React.useState<I_POST>({
-        context: '',
+        description: '',
         provedReputation: 0,
+        title: '',
     })
 
     if (!userContext.userState) {
@@ -175,8 +176,7 @@ export default observer(() => {
                             <Button
                                 onClick={async () => {
                                     const proof = await userContext.newPost(
-                                        reqInfo.nonce ?? 0,
-                                        proveData,
+                                        0,
                                         post
                                     )
                                     getPosts()
