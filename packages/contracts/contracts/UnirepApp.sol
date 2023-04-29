@@ -46,7 +46,7 @@ contract ZKComm is ERC20 {
         uint256 abstein;
         bool isActive;
         uint256 epochKey;
-        uint48 proposalEpoch;
+        uint48 currEpoch;
         uint256[5] publicSignals;
         uint256[8] proof;
     }
@@ -110,6 +110,7 @@ contract ZKComm is ERC20 {
                 proposalCount,
                 title,
                 description,
+                1000,
                 minRepToVote,
                 0,
                 0,
@@ -201,20 +202,6 @@ contract ZKComm is ERC20 {
         postCount++;
 
         emit NewPost();
-    }
-
-    function upVote(uint256 index) public {
-        uint256 atstVal = 100;
-
-        unirep.attest(
-            posts[index].epochKey,
-            posts[index].postEpoch,
-            0,
-            atstVal
-        );
-
-        posts[index].upVotes++;
-        emit UpVote(index, atstVal);
     }
 
     function getPost(uint256 _index) public view returns (Post memory) {
