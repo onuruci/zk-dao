@@ -14,6 +14,7 @@
     border-radius: 5px;
     padding: 10px;
     flex-grow: 1;
+    background-color: white;
 }
 
 .create-post-title {
@@ -59,8 +60,17 @@
     flex-direction: row;
     gap: 32px;
 }
+
+.forum-upper-side div:first-child {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 12px;
+}
+
 .details-wrapper {
     padding: 16px;
     border: 1px solid black;
     border-radius: 4px;
+    background-color: white;
 }
