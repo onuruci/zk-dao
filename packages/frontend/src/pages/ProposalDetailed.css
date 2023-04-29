@@ -135,11 +135,9 @@
 .selection-wrapper {
     display: flex;
     flex-direction: row;
-    border: 1px solid black;
     border-radius: 8px;
-    width: 200px;
-    height: 10px;
-    transform: rotateY(180deg);
+    height: 8px;
+    justify-content: space-between;
 }
 
 .selection-wrapper > div:first-child {
@@ -147,6 +145,8 @@
     height: 10px;
     border-radius: 8px;
     position: relative;
+    border: 1px solid black;
+    height: 8px;
 }
 
 .selection-wrapper > div:last-child {
@@ -154,10 +154,16 @@
     background: rgb(20, 20, 180);
     transition: width ease-in-out 1s;
     border-radius: 8px;
+    transform: translateX(-200px);
 }
 
 .selection-outer-wrapper {
     display: flex;
     flex-direction: row;
     gap: 40px;
+}
+
+.selection-outer-wrapper > div:last-child {
+    position: relative;
+    right: 0;
 }

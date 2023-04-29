@@ -15,14 +15,11 @@ p {
     position: fixed;
     top: 0;
     left: 0;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
+    height: 100vh;
+    width: 100vw;
     z-index: -1;
     object-fit: cover;
-  }
-  
+}
 
 .attester {
     display: flex;
@@ -45,7 +42,6 @@ p {
     position: absolute;
     right: 200px;
     bottom: 100px;
-
 }
 
 .bg {
