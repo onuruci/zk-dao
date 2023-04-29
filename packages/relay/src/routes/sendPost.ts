@@ -34,11 +34,13 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
 
             console.log('After epoch: ', epoch)
 
-            const reputatitionProof = new ReputationProof(
+            const reputationProof = new ReputationProof(
                 repSignals,
                 repProof,
                 synchronizer.prover
             )
+
+            console.log(reputationProof.minRep);
 
             // Fix and check reputationProof
 
