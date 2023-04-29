@@ -40,6 +40,8 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
                 synchronizer.prover
             )
 
+            // Fix and check reputationProof
+
             const repValid = await epochKeyProof.verify()
             console.log('REP Valid: ', repValid)
             if (!repValid) {

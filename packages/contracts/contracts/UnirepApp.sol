@@ -17,7 +17,11 @@ contract ZKComm {
     IVerifier internal dataVerifier;
 
     Post[] public posts;
+    Proposal[] public proposals;
     uint256 public postCount = 0;
+    uint256 public proposalCount = 0;
+
+    mapping(uint256 => mapping(uint256 => bool)) usedKeysPerProposal;
 
     struct Post {
         uint256 epochKey;
@@ -30,8 +34,25 @@ contract ZKComm {
         uint256 downVotes;
     }
 
+    struct Proposal {
+        uint256 id;
+        string title;
+        string description;
+        uint256 minRepToVote;
+        uint256 approvals;
+        uint256 rejects;
+        uint256 abstein;
+        bool isActive;
+        uint256 epochKey;
+        uint48 currEpoch;
+        uint256[5] publicSignals;
+        uint256[8] proof;
+    }
+
     event NewPost();
+    event NewProposal();
     event UpVote(uint256 _index, uint256 _atstVal);
+    event ProposalVote(uint256 _index, uint256 _vote);
 
     constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) {
         unirep = _unirep;
@@ -55,6 +76,67 @@ contract ZKComm {
         unirep.attest(posts[index].epochKey, posts[index].postEpoch, 0, atstVal);
         posts[index].upVotes++;
         emit UpVote(index, atstVal);
+    }
+
+    function newProposal(
+        string memory title,
+        string memory description,
+        uint256 minRepToVote,
+        uint256 epochKey,
+        uint48 currEpoch,
+        uint256[5] calldata publicSignals,
+        uint256[8] calldata proof
+    ) public {
+        // publish proposal with proving your reputation
+        require(verifyDataProof(publicSignals, proof));
+
+        // get epoch key epoch number and check if post in current epoch and generate it
+
+        proposals.push(Proposal(
+            proposalCount,
+            title,
+            description,
+            minRepToVote,
+            0,
+            0,
+            0,
+            true,
+            epochKey,
+            currEpoch,
+            publicSignals,
+            proof
+        ));
+
+        proposalCount++;
+
+        emit NewProposal();
+    }
+
+    function voteProposal(
+        uint256 _index,
+        uint256 _vote,
+        uint256[5] calldata publicSignals,
+        uint256[8] calldata proof
+    ) public {
+        require(_vote >= 0 && _vote <= 2);
+        require(_index < proposalCount && proposalCount > 0);
+        require(verifyDataProof(publicSignals, proof));
+        // require proved reputation count to be >= proposal.minRepToVote
+
+        // get epoch key and label it as used to prevent duplicate voting
+
+        if(_vote == 0) {
+            // reject
+            proposals[_index].rejects++;
+        } else if(_vote == 1) {
+            // approve
+            proposals[_index].approvals++;
+        } else if(_vote == 2) {
+            // abstein
+            proposals[_index].abstein++;
+        }
+
+        emit ProposalVote(_index, _vote);
     }
 
     function newPost(
@@ -97,6 +179,14 @@ contract ZKComm {
         return postCount;
     }
 
+    function getAllProposals() public view returns (Proposal[] memory) {
+        return proposals;
+    }
+
+    function getProposalCount() public view returns (uint256) {
+        return proposalCount;
+    }
+
     function verifyDataProof(
         uint256[5] calldata publicSignals,
         uint256[8] calldata proof
@@ -104,3 +194,15 @@ contract ZKComm {
         return dataVerifier.verifyProof(publicSignals, proof);
     }
 }
+
+
+// Send proposals properly
+
+// Vote on proposals
+
+// End proposal functionality
+
+// Use replecable fields
+
+// Spend erc20 based on these replecable field values
+// Users should be sending requests at the same epoch to spend erc20
