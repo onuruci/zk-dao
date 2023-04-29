@@ -84,7 +84,7 @@ export default observer(() => {
                             <input
                                 className="reputation-count"
                                 type="number"
-                                placeholder="With Karma..."
+                                placeholder="Displayed Karma.."
                                 id="reputation"
                                 name="reputation"
                                 onChange={(e) =>

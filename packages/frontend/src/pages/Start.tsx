@@ -82,8 +82,8 @@ export default observer(() => {
                             >
                                 WELCOME!
                             </p>
-                            <Link to="/dashboard">
-                                <JoinButton text={"Dashboard"} />
+                            <Link to="/forum">
+                                <JoinButton text={"Forum"} />
                             </Link>
                         </div>
                     )}

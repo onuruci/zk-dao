@@ -8,7 +8,7 @@ export default () => {
     return (
         <>
             <div className="header">
-                <Link to="dashboard">
+                <Link to="forum">
                     <img
                         src={require('../../public/logo.svg')}
                         alt="UniRep logo"
