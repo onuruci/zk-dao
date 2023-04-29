@@ -18,3 +18,7 @@ export interface I_POST {
     postEpoch?: number
     proof?: bigint[]
 }
+
+export interface I_PROPOSAL {
+    provedReputation: number
+}
