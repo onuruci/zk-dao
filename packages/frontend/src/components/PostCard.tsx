@@ -58,7 +58,7 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
 
                 <img className="avatar__image" src={avatar} />
                 <div className="post-title">
-                    <div>{title}</div>
+                    <div onClick={handleNavigation}>{title}</div>
                     <div className="karma-wrapper">
                         <div>at epoch {postEpoch?.toString()}...</div>
                         <div>{publicSignals![1].toString()} karma</div>

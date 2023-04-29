@@ -5,7 +5,7 @@ import { Synchronizer } from '@unirep/core'
 import { EpochKeyProof } from '@unirep/circuits'
 import { APP_ADDRESS } from '../config'
 import TransactionManager from '../singletons/TransactionManager'
-import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
 
 export default (app: Express, db: DB, synchronizer: Synchronizer) => {
     app.post('/api/upvote', async (req, res) => {

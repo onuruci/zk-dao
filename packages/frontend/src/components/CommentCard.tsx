@@ -16,9 +16,12 @@ type Comment = {
 
     return(
         <div className="comment-container">
-            <div className="info-positioner">
-                <img className="avatar" src={avatar} />
-                <div className="epochKey">0xe00E6b5BEe15a0995f3391179CdaA4c098D94586</div>
+            <div style={{marginTop: "-25px"}} className="info-positioner">
+                <img  className="avatar-comments" src={avatar} />
+                <div  className="karma-wrapper">
+                          <div>at epoch {"50.."}...</div>
+                          <div>{140} karma</div>
+                      </div>
             </div>
             <div className="text-container">
                 {text}

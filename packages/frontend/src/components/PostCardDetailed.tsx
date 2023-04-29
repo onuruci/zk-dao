@@ -10,9 +10,10 @@ import clock from "../img/clockIcon.png"
 import './postcarddetailed.css';
 import User from '../contexts/User'
 import { I_POST } from '../pages/types'
-import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
 import { APP_ADDRESS, ETH_PROVIDER_URL } from '../pages/constants'
 import { ethers } from 'ethers'
+import Button from '../components/Button'
 
 
 export default observer(() => { 
@@ -78,12 +79,18 @@ export default observer(() => {
     console.log(post)
 
     return(
-        <div className="details-wrapper">
-            <h3 className="title-positioner">{post?.title.toString()}</h3>
+        <div className="details-wrapped">
+          <div className="details-positioner">
             <div className="details-container">
                 <div className="info-positioner">
                     <img className="avatar" src={avatar} alt="Avatar" />
-                    <div className="epochKey">{post?.epochKey?.toString()}</div>
+                    <div className="karma-title-positioner">
+                    <div className="title">{post?.title.toString()}</div>
+                      <div className="karma-wrapper">
+                          <div>at epoch {post?.postEpoch?.toString()}...</div>
+                          <div>{post?.publicSignals![1].toString()} karma</div>
+                      </div>
+                    </div>
                 </div>
                 <div className="description-container">
                     { post?.description.toString() }
@@ -109,16 +116,21 @@ export default observer(() => {
                 </div>
             </div>
             <div className="comment-container">
-                <form>
-                    <input className="create-post-context" type="text" placeholder="What do you think?" id="comment" name="comment" value={comment} onChange={handleChange} />
+                <form className="button-aligner">
+                    <input className="create-comment-context" type="text" placeholder="What do you think?" id="comment" name="comment" value={comment} onChange={handleChange} />
                     <br/>
-                    <div className="submit-button" onClick={() => {}}>
-                        <img className="submit-button-image" src={postButton} alt="Post button" />
-                    </div>
+                    <Button
+                            onClick={() => {}}
+                            styles={{margin: "10px"}}
+                            loadingText="Posting..."
+                        >
+                            Post
+                      </Button>
                 </form>
             </div>
             {comments.map((comment) => 
             <CommentCard key={comment.id} text={comment.text} />)}
+            </div>
         </div>
     )
 });
