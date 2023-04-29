@@ -8,7 +8,7 @@ import { EpochKeyProof } from '@unirep/circuits'
 import { ReputationProof } from '@unirep/circuits'
 import { APP_ADDRESS } from '../config'
 import TransactionManager from '../singletons/TransactionManager'
-import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
 
 const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi)
 
