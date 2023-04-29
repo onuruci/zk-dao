@@ -47,6 +47,7 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
         publicSignals,
         upVotes,
         downVotes,
+        postEpoch,
     } = postInfo
 
     return (
@@ -56,7 +57,7 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
                 <div className="post-title">
                     <div>{title}</div>
                     <div className="karma-wrapper">
-                        <div>by {epochKey?.toString().slice(0, 10)}...</div>
+                        <div>at epoch {postEpoch?.toString()}...</div>
                         <div>{publicSignals![1].toString()} karma</div>
                     </div>
                 </div>
