@@ -39,7 +39,6 @@ export default ({
         if (currEpoch === postEpoch) {
             setActive(true)
         }
-
         checkProof()
     }, [])
 
@@ -49,6 +48,10 @@ export default ({
             <div>Epoch Key: {epochKey.toString()}</div>
             <div>Min Rep: {minRep.toString()}</div>
             <div>Post Epoch: {postEpoch}</div>
+            {
+                valid ? 'Post Valid' :
+                    'Not Valid'
+            }
             {active && (
                 <Button
                     onClick={async () => {

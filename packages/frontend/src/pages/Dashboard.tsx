@@ -4,6 +4,7 @@ import './dashboard.css'
 import Button from '../components/Button'
 import Tooltip from '../components/Tooltip'
 import Post from '../components/Post'
+import Timer from '../components/Timer'
 import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
 import { ethers } from 'ethers'
 import { I_POST, I_COMMENT } from './types'
@@ -31,7 +32,7 @@ type ProofInfo = {
 
 export default observer(() => {
     const userContext = React.useContext(User)
-    const [remainingTime, setRemainingTime] = React.useState<number | string>(0)
+
     const [reqData, setReqData] = React.useState<{
         [key: number]: number | string
     }>({})
@@ -53,15 +54,6 @@ export default observer(() => {
         console.log(postCount)
     }
 
-    const updateTimer = () => {
-        if (!userContext.userState) {
-            setRemainingTime('Loading...')
-            return
-        }
-        const time = userContext.userState.sync.calcEpochRemainingTime()
-        setRemainingTime(time)
-    }
-
     const fieldType = (i: number) => {
         if (i < userContext.sumFieldCount) {
             return 'sum'
@@ -73,12 +65,6 @@ export default observer(() => {
         let arr = posts.slice().reverse()
         setPosts([...arr])
     }
-
-    React.useEffect(() => {
-        setInterval(() => {
-            updateTimer()
-        }, 1000)
-    }, [])
 
     React.useEffect(() => {
         getPosts()
@@ -99,28 +85,7 @@ export default observer(() => {
 
             <div className="container">
                 <div className="info-container">
-                    <div className="info-item">
-                        <h3>Epoch</h3>
-                        <Tooltip
-                            text={`An epoch is a unit of time, defined by the attester, with a state tree and epoch tree. User epoch keys are valid for 1 epoch before they change.`}
-                        />
-                    </div>
-                    <div className="info-item">
-                        <div>Current epoch #</div>
-                        <div className="stat">
-                            {userContext.userState?.sync.calcCurrentEpoch()}
-                        </div>
-                    </div>
-                    <div className="info-item">
-                        <div>Remaining time</div>
-                        <div className="stat">{remainingTime}</div>
-                    </div>
-                    <div className="info-item">
-                        <div>Latest transition epoch</div>
-                        <div className="stat">
-                            {userContext.latestTransitionedEpoch}
-                        </div>
-                    </div>
+                    <Timer />
 
                     <hr />
 
@@ -187,11 +152,10 @@ export default observer(() => {
                         <form className="post-form">
                             {Object.keys(post).map((key, index) => (
                                 <div
-                                    className={`post-field-container ${
-                                        index === 1
-                                            ? 'last-post-field'
-                                            : 'not-last'
-                                    }`}
+                                    className={`post-field-container ${index === 1
+                                        ? 'last-post-field'
+                                        : 'not-last'
+                                        }`}
                                 >
                                     <label htmlFor={key}>{key}</label>
                                     <input
@@ -261,6 +225,7 @@ export default observer(() => {
                         {posts?.length > 0 &&
                             posts.map((p: any, i: number) => {
                                 console.log(p)
+                                console.log(userContext.userState?.sync.calcCurrentEpoch());
                                 return (
                                     <Post
                                         epochKey={p.epochKey}
@@ -270,7 +235,7 @@ export default observer(() => {
                                         context={p.context}
                                         currEpoch={userContext.userState?.sync.calcCurrentEpoch()}
                                         postEpoch={p.postEpoch}
-                                        index={i}
+                                        index={posts.length - i - 1}
                                     />
                                 )
                             })}

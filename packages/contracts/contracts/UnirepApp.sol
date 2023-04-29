@@ -34,6 +34,9 @@ contract UnirepApp {
         uint256 provedReputation;
     }
 
+    event NewPost();
+    event UpVote(uint256 _index, uint256 _atstVal);
+
     constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) {
         // set unirep address
         unirep = _unirep;
@@ -75,8 +78,11 @@ contract UnirepApp {
     }
 
     function upVote(uint256 index) public {
-        submitAttestation(posts[index].epochKey, posts[index].postEpoch, 0, 10);
+        uint256 atstVal = 10;
+
+        submitAttestation(posts[index].epochKey, posts[index].postEpoch, 0, atstVal);
         posts[index].upVotes++;
+        emit UpVote(index, atstVal);
     }
 
     function newPost(
@@ -92,6 +98,8 @@ contract UnirepApp {
         );
 
         postCount++;
+
+        emit NewPost();
     }
 
     function getPost(uint256 _index) public view returns (Post memory) {
