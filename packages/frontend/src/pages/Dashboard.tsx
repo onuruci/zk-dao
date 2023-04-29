@@ -153,10 +153,11 @@ export default observer(() => {
                         <form className="post-form">
                             {Object.keys(post).map((key, index) => (
                                 <div
-                                    className={`post-field-container ${index === 1
-                                        ? 'last-post-field'
-                                        : 'not-last'
-                                        }`}
+                                    className={`post-field-container ${
+                                        index === 1
+                                            ? 'last-post-field'
+                                            : 'not-last'
+                                    }`}
                                 >
                                     <label htmlFor={key}>{key}</label>
                                     <input
@@ -225,7 +226,9 @@ export default observer(() => {
                         {posts?.length > 0 &&
                             posts.map((p: any, i: number) => {
                                 console.log(p)
-                                console.log(userContext.userState?.sync.calcCurrentEpoch());
+                                console.log(
+                                    userContext.userState?.sync.calcCurrentEpoch()
+                                )
                                 return (
                                     <Post
                                         epochKey={p.epochKey}

@@ -11,6 +11,8 @@ import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/
 
 import './forum.css'
 import Button from '../components/Button'
+import Tooltip from '../components/Tooltip'
+import Timer from '../components/Timer'
 
 const APP_CONTRACT = new ethers.Contract(
     APP_ADDRESS,
@@ -52,41 +54,133 @@ export default observer(() => {
     return (
         <div className="forum-wrapper">
             <div className="forum-upper-side">
-                <form className="create-post">
-                    <input
-                        className="create-post-title"
-                        type="text"
-                        placeholder="Title..."
-                        id="title"
-                        name="title"
-                        onChange={(e) =>
-                            setPost({ ...post, title: e.target.value })
-                        }
-                    />
-                    <textarea
-                        className="create-post-context"
-                        placeholder="What do you think?"
-                        id="description"
-                        name="description"
-                        onChange={(e) =>
-                            setPost({ ...post, description: e.target.value })
-                        }
-                    />
-
-                    <img
-                        onClick={handleCreatePost}
-                        className="submit-button-image"
-                        src={postButton}
-                    />
-                </form>
-                <div className="details-wrapper">
+                <div>
                     <Button
-                        styles={{ padding: '12px', 'font-size': '16px' }}
+                        styles={{
+                            padding: '12px 0',
+                            'font-size': '16px',
+                            width: '100%',
+                            'background-color': 'white',
+                            border: '1px solid black',
+                            'border-radius': '12px',
+                        }}
                         onClick={() => userContext.stateTransition()}
                         loadingText="Updating epoch..."
                     >
                         Update Epoch
                     </Button>
+                    <form className="create-post">
+                        <div>
+                            <input
+                                className="create-post-title"
+                                type="text"
+                                placeholder="Title..."
+                                id="title"
+                                name="title"
+                                onChange={(e) =>
+                                    setPost({ ...post, title: e.target.value })
+                                }
+                            />
+                            <input
+                                className="reputation-count"
+                                type="number"
+                                placeholder="With Karma..."
+                                id="reputation"
+                                name="reputation"
+                                onChange={(e) =>
+                                    setPost({
+                                        ...post,
+                                        provedReputation: parseInt(
+                                            e.target.value
+                                        ),
+                                    })
+                                }
+                            />
+                        </div>
+                        <textarea
+                            className="create-post-context"
+                            placeholder="What do you think?"
+                            id="description"
+                            name="description"
+                            onChange={(e) =>
+                                setPost({
+                                    ...post,
+                                    description: e.target.value,
+                                })
+                            }
+                        />
+
+                        <Button
+                            styles={{ 'margin-left': 'auto' }}
+                            onClick={handleCreatePost}
+                            loadingText="Posting..."
+                        >
+                            Post
+                        </Button>
+                    </form>
+                </div>
+                <div className="info-container">
+                    <Timer />
+
+                    <hr />
+
+                    <div className="info-item">
+                        <h3>Latest Data</h3>
+                        <Tooltip text="This is all the data the user has received. The user cannot prove data from the current epoch." />
+                    </div>
+                    {userContext.data.slice(0, 1).map((data, i) => {
+                        if (i < userContext.sumFieldCount) {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Latest Reputation</div>
+                                    <div className="stat">
+                                        {(data || 0).toString()}
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Provable Reputation</div>
+                                    <div className="stat">
+                                        {(
+                                            data % BigInt(2 ** 206) || 0
+                                        ).toString()}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    })}
+
+                    <br />
+
+                    <div className="info-item">
+                        <h3>Provable Data</h3>
+                        <Tooltip text="This is the data the user has received up until their last transitioned epoch. This data can be proven in ZK." />
+                    </div>
+                    {userContext.provableData.slice(0, 1).map((data, i) => {
+                        if (i < userContext.sumFieldCount) {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Data {i}</div>
+                                    <div className="stat">
+                                        {(data || 0).toString()}
+                                    </div>
+                                </div>
+                            )
+                        } else {
+                            return (
+                                <div key={i} className="info-item">
+                                    <div>Data {i}</div>
+                                    <div className="stat">
+                                        {(
+                                            data % BigInt(2 ** 206) || 0
+                                        ).toString()}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    })}
                 </div>
             </div>
             <div className="post-list">

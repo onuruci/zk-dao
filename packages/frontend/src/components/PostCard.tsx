@@ -9,6 +9,8 @@ import likeIcon from '../utils/images/like.png'
 import dislikeIcon from '../utils/images/dislike.png'
 import { I_POST } from '../pages/types'
 import User from '../contexts/User'
+import upvoteIcon from '../utils/images/upvotesvg.svg'
+import downvoteIcon from '../utils/images/downvoteThin.svg'
 
 // description: string
 // title: string
@@ -45,6 +47,7 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
         publicSignals,
         upVotes,
         downVotes,
+        postEpoch,
     } = postInfo
 
     console.log(upVotes?.toString())
@@ -52,23 +55,24 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
     return (
         <div className="forum-container">
             <div className="avatar-title-wrapper">
-                <div className="avatar">
-                    <img className="avatar__image" src={avatar} />
-                </div>
-                <div className="title-wrapper">
-                    <h3 onClick={handleNavigation}>{title}</h3>
-                    <div>{publicSignals![1].toString()}</div>
+
+                <img className="avatar__image" src={avatar} />
+                <div className="post-title">
+                    <div>{title}</div>
+                    <div className="karma-wrapper">
+                        <div>at epoch {postEpoch?.toString()}...</div>
+                        <div>{publicSignals![1].toString()} karma</div>
+                    </div>
                 </div>
                 <div className="post-time-positioner">
-                    <div>{publicSignals![1].toString()}</div>
                     <div className="vote-info-container">
                         <img
                             onClick={() => userContext.upVote(index)}
                             className="vote-icon"
-                            src={likeIcon}
+                            src={upvoteIcon}
                         />
                         <div>{upVotes?.toString()}</div>
-                        <img className="vote-icon" src={dislikeIcon} />
+                        <img className="vote-icon" src={downvoteIcon} />
                     </div>
                     <div>
                         <img className="post-time" src={clock} />

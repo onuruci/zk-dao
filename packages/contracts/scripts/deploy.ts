@@ -18,7 +18,7 @@ export async function deployApp() {
     const verifierF = await ethers.getContractFactory('DataProofVerifier')
     const verifier = await verifierF.deploy()
     await verifier.deployed()
-    const App = await ethers.getContractFactory('UnirepApp')
+    const App = await ethers.getContractFactory('ZKComm')
     const app = await App.deploy(unirep.address, verifier.address, epochLength)
 
     await app.deployed()

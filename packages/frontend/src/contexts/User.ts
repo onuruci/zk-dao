@@ -145,6 +145,7 @@ class User {
         const stateTreeProof = stateTree.createProof(index)
         const provableData = await this.userState.getProvableData()
         const sumFieldCount = this.userState.sync.settings.sumFieldCount
+        console.log('settings: ', this.userState.sync.settings)
         // const values = Array(sumFieldCount).fill(0)
         // for (let [key, value] of Object.entries(data)) {
         //     values[Number(key)] = value
@@ -231,6 +232,8 @@ class User {
         for (let [key, value] of Object.entries(data)) {
             values[Number(key)] = value
         }
+
+        console.log('proving data: ', data)
         const attesterId = this.userState.sync.attesterId
         const circuitInputs = stringifyBigInts({
             identity_secret: this.userState.id.secret,

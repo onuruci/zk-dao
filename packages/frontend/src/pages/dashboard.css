@@ -51,6 +51,7 @@ select {
     height: fit-content;
     font-weight: 200;
     line-height: 32px;
+    background-color: white;
 }
 
 .info-item {
