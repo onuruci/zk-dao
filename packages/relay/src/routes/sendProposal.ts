@@ -13,11 +13,11 @@ import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/
 const appContract = new ethers.Contract(APP_ADDRESS, UNIREP_APP.abi)
 
 export default (app: Express, db: DB, synchronizer: Synchronizer) => {
-    app.post('/api/newPost', async (req, res) => {
+    app.post('/api/newProposal', async (req, res) => {
         try {
-            const { publicSignals, proof, repSignals, repProof, post } =
+            const { publicSignals, proof, repSignals, repProof, proposal } =
                 req.body
-            console.log(post)
+            console.log('proposal Entered')
 
             const epochKeyProof = new EpochKeyProof(
                 publicSignals,
@@ -34,15 +34,11 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
 
             console.log('After epoch: ', epoch)
 
-            const reputationProof = new ReputationProof(
+            const reputatitionProof = new ReputationProof(
                 repSignals,
                 repProof,
                 synchronizer.prover
             )
-
-            console.log(reputationProof.minRep);
-
-            // Fix and check reputationProof
 
             const repValid = await epochKeyProof.verify()
             console.log('REP Valid: ', repValid)
@@ -51,16 +47,18 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
                 return
             }
 
+            console.log(proposal)
+
             const calldata = appContract.interface.encodeFunctionData(
-                'newPost',
-                //[epochKeyProof.epochKey, epoch, publicSignals, proof, context]
+                'newProposal',
                 [
+                    proposal.title,
+                    proposal.description,
+                    proposal.minReptoVote,
                     epochKeyProof.epochKey,
                     epoch,
                     repSignals,
                     repProof,
-                    post.title,
-                    post.description,
                 ]
             )
             console.log('Hash entered')

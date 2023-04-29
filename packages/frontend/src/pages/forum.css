@@ -78,6 +78,7 @@
     background-color: #dbefff;
     border: 1px solid black;
     border-radius: 4px;
+    width: fit-content;
 }
 
 .details-wrapper {

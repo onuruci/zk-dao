@@ -47,6 +47,7 @@ export default observer(() => {
     })
 
     const [posts, setPosts] = React.useState<any>()
+    const [proposals, setProposals] = React.useState<any>()
 
     const consoleLogPostCount = async () => {
         const postCount: any = await appContract.postCount()
@@ -64,6 +65,12 @@ export default observer(() => {
         const posts: [] = await appContract.getAllPosts()
         let arr = posts.slice().reverse()
         setPosts([...arr])
+    }
+
+    const getProposals = async () => {
+        const tempProposals: [] = await appContract.getAllProposals()
+
+        console.log('TEMP PROPOSALS:    ', tempProposals)
     }
 
     React.useEffect(() => {
@@ -153,11 +160,10 @@ export default observer(() => {
                         <form className="post-form">
                             {Object.keys(post).map((key, index) => (
                                 <div
-                                    className={`post-field-container ${
-                                        index === 1
+                                    className={`post-field-container ${index === 1
                                             ? 'last-post-field'
                                             : 'not-last'
-                                    }`}
+                                        }`}
                                 >
                                     <label htmlFor={key}>{key}</label>
                                     <input
@@ -184,6 +190,18 @@ export default observer(() => {
                                 }}
                             >
                                 New Post
+                            </Button>
+
+                            <Button
+                                onClick={async () => {
+                                    const proof = await userContext.newProposal(
+                                        0,
+                                        post
+                                    )
+                                    getProposals()
+                                }}
+                            >
+                                New Proposal
                             </Button>
                         </form>
                         <div className="action-container transition">

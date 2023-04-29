@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import avatar from "../img/ObtLogo.png";
-import postButton from "../img/svg.svg";
-import { useLocation } from "react-router-dom";
-import upArrow from "../img/upvoteIcon.png";
-import downArrow from "../img/downvoteIcon.png";
-import CommentCard from "./CommentCard";
-import { observer } from 'mobx-react-lite';
-import clock from "../img/clockIcon.png"
-import './postcarddetailed.css';
+import React, { useState, useEffect, useContext } from 'react'
+import avatar from '../img/ObtLogo.png'
+import postButton from '../img/svg.svg'
+import { useLocation } from 'react-router-dom'
+import upArrow from '../img/upvoteIcon.png'
+import downArrow from '../img/downvoteIcon.png'
+import CommentCard from './CommentCard'
+import { observer } from 'mobx-react-lite'
+import clock from '../img/clockIcon.png'
+import './postcarddetailed.css'
 import User from '../contexts/User'
 import { I_POST } from '../pages/types'
 import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
@@ -16,7 +16,7 @@ import { ethers } from 'ethers'
 import Button from '../components/Button'
 
 
-export default observer(() => { 
+export default observer(() => {
 
   const APP_CONTRACT = new ethers.Contract(
     APP_ADDRESS,
@@ -132,5 +132,18 @@ export default observer(() => {
             <CommentCard key={comment.id} text={comment.text} />)}
             </div>
         </div>
-    )
+      </div>
+      <div className="comment-container">
+        <form>
+          <input className="create-post-context" type="text" placeholder="What do you think?" id="comment" name="comment" value={comment} onChange={handleChange} />
+          <br />
+          <div className="submit-button" onClick={() => { }}>
+            <img className="submit-button-image" src={postButton} alt="Post button" />
+          </div>
+        </form>
+      </div>
+      {comments.map((comment) =>
+        <CommentCard key={comment.id} text={comment.text} />)}
+    </div>
+  )
 });

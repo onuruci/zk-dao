@@ -1,0 +1,111 @@
+.detailed-proposal-outer-wrapper {
+    max-width: 1200px;
+    margin: 100px auto;
+}
+
+.proposal-detailed-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    margin-top: 50px;
+}
+
+.proposal-detailed-wrapper > div:first-child {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.proposal-detailed-wrapper > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.proposal-title {
+    font-size: 18px;
+    font-weight: 500;
+    border-bottom: 3px solid blue;
+    padding: 10px 0;
+}
+
+.detailed-version {
+    margin-top: 50px;
+}
+
+.detailed-proposal-description {
+    margin-top: 50px;
+}
+
+.voting-section {
+    background-color: white;
+    padding: 20px 40px;
+    border-radius: 12px;
+    border: 1px solid black;
+    margin-top: 50px;
+}
+
+.voting-section-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.voting-option-list {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote-selection {
+    width: 75%;
+    background-color: inherit;
+    border-radius: 6px;
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+.vote-yes {
+    border: 2px solid #1ada50;
+}
+
+.vote-yes:focus {
+    background-color: #1ada50;
+}
+
+.vote-no {
+    border: 2px solid #da1a1a;
+}
+
+.vote-no:focus {
+    background-color: #da1a1a;
+}
+
+.vote-abstain {
+    border: 2px solid black;
+}
+
+.vote-abstain:focus {
+    background-color: black;
+    color: white;
+}
+
+.vote-submit-button {
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    border: 2px solid black;
+    border-radius: 16px;
+    width: 50%;
+    cursor: pointer;
+}
+
+.vote-submit-button:active {
+    background-color: rgb(220, 220, 220);
+}
+
+.vote-submit-button:hover {
+    background-color: rgb(246, 246, 246);
+}

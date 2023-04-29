@@ -1,6 +1,30 @@
 .governance-wrapper {
-    align-items: flex-start;
-    justify-content: flex-start;
     display: flex;
     flex-direction: column;
+    max-width: 1200px;
+    padding: 0 12px;
+    margin: 0 auto;
+    margin-top: 75px;
+    gap: 16px;
+}
+.number-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.proposal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.governance-info-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.proposal-section {
+    margin: 75px 0;
 }
