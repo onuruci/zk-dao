@@ -1,0 +1,42 @@
+.comment-container {
+    border: 1px solid;
+    border-color: black;
+    border-radius: 5px;
+    margin-left: 75px;
+    margin-right: 75px;
+    width: 90vw;
+    padding: 10px;
+    height: auto;
+    margin-top: 30px;
+}
+
+.text-container {
+    font-family: "Lato", sans-serif;
+    margin-left: 80px;
+}
+
+.vote-counts{
+    margin-right: 15px;
+    display: flex;
+    margin-left: auto;
+    justify-content: end;
+    align-items: center;
+    gap: 3px;
+    margin-top: 10px;
+}
+
+.avatar {
+    height: 3rem;
+    width: 4rem;
+    margin-right: 16px; 
+}
+
+.epochKey {
+    color: black;
+}
+
+.info-positioner {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
