@@ -132,18 +132,6 @@ export default observer(() => {
             <CommentCard key={comment.id} text={comment.text} />)}
             </div>
         </div>
-      </div>
-      <div className="comment-container">
-        <form>
-          <input className="create-post-context" type="text" placeholder="What do you think?" id="comment" name="comment" value={comment} onChange={handleChange} />
-          <br />
-          <div className="submit-button" onClick={() => { }}>
-            <img className="submit-button-image" src={postButton} alt="Post button" />
-          </div>
-        </form>
-      </div>
-      {comments.map((comment) =>
-        <CommentCard key={comment.id} text={comment.text} />)}
-    </div>
+
   )
 });
