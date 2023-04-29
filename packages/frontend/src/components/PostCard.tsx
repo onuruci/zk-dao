@@ -53,8 +53,12 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
                 <div className="avatar">
                     <img className="avatar__image" src={avatar} />
                 </div>
-                <h3>{title}</h3>
+                <div className="title-wrapper">
+                    <h3>{title}</h3>
+                    <div>{publicSignals![1].toString()}</div>
+                </div>
                 <div className="post-time-positioner">
+                    <div>{publicSignals![1].toString()}</div>
                     <div className="vote-info-container">
                         <img
                             onClick={() => userContext.upVote(index)}
