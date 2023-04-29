@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import avatar from "../img/ObtLogo.png";
-import postButton from "../img/svg.svg";
-import { useLocation } from "react-router-dom";
-import upArrow from "../img/upvoteIcon.png";
-import downArrow from "../img/downvoteIcon.png";
-import CommentCard from "./CommentCard";
-import { observer } from 'mobx-react-lite';
-import clock from "../img/clockIcon.png"
-import './postcarddetailed.css';
+import React, { useState, useEffect, useContext } from 'react'
+import avatar from '../img/ObtLogo.png'
+import postButton from '../img/svg.svg'
+import { useLocation } from 'react-router-dom'
+import upArrow from '../img/upvoteIcon.png'
+import downArrow from '../img/downvoteIcon.png'
+import CommentCard from './CommentCard'
+import { observer } from 'mobx-react-lite'
+import clock from '../img/clockIcon.png'
+import './postcarddetailed.css'
 import User from '../contexts/User'
 import { I_POST } from '../pages/types'
 import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'

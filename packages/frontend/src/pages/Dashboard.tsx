@@ -68,9 +68,9 @@ export default observer(() => {
     }
 
     const getProposals = async () => {
-        const tempProposals: [] = await appContract.getAllProposals();
+        const tempProposals: [] = await appContract.getAllProposals()
 
-        console.log("TEMP PROPOSALS:    ", tempProposals);
+        console.log('TEMP PROPOSALS:    ', tempProposals)
     }
 
     React.useEffect(() => {
