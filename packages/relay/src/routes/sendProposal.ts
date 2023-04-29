@@ -47,14 +47,12 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
                 return
             }
 
-            console.log(proposal)
-
             const calldata = appContract.interface.encodeFunctionData(
                 'newProposal',
                 [
                     proposal.title,
                     proposal.description,
-                    proposal.minReptoVote,
+                    proposal.minRepToVote,
                     epochKeyProof.epochKey,
                     epoch,
                     repSignals,

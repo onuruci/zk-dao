@@ -20,7 +20,7 @@ export default function App() {
                     <Route path="forum" element={<Forum />} />
                     <Route path="governance" element={<Governance />} />
                     <Route
-                        path="governance/:proposalId"
+                        path="governance/proposal/:proposalId"
                         element={<ProposalDetailed />}
                     />
                     <Route

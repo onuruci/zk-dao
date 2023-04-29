@@ -244,7 +244,7 @@ class User {
                 repSignals: dataProof.publicSignals,
                 repProof: dataProof.proof,
                 index: proposalIndex,
-                voteType: voteType,
+                voteValue: voteType,
                 /// proposal will be added
             })
         )

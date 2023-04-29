@@ -204,7 +204,9 @@ export default observer(() => {
                         .slice()
                         .reverse()
                         .map((proposal, index) => (
-                            <Link to={`${proposals.length - index - 1}`}>
+                            <Link
+                                to={`proposal/${proposals.length - index - 1}`}
+                            >
                                 <ProposalCard
                                     key={index}
                                     proposalInfo={proposal}

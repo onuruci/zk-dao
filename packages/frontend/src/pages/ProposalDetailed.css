@@ -13,7 +13,9 @@
 .proposal-detailed-wrapper > div:first-child {
     display: flex;
     flex-direction: column;
-    width: 60%;
+    flex-grow: 1;
+    justify-content: space-between;
+    width: 50%;
 }
 
 .proposal-detailed-wrapper > div:last-child {
@@ -108,4 +110,54 @@
 
 .vote-submit-button:hover {
     background-color: rgb(246, 246, 246);
+}
+
+.vote-results {
+    background-color: white;
+    padding: 8px 24px;
+    border: 1px solid black;
+    border-radius: 8px;
+    margin-top: 50px;
+}
+
+.vote-results > div:first-child {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.result-selections-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    gap: 20px;
+}
+
+.selection-wrapper {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+    border-radius: 8px;
+    width: 200px;
+    height: 10px;
+    transform: rotateY(180deg);
+}
+
+.selection-wrapper > div:first-child {
+    width: 200px;
+    height: 10px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.selection-wrapper > div:last-child {
+    height: 10px;
+    background: rgb(20, 20, 180);
+    transition: width ease-in-out 1s;
+    border-radius: 8px;
+}
+
+.selection-outer-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
 }
