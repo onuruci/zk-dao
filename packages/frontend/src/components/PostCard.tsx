@@ -25,13 +25,13 @@ type Props = {
 }
 
 const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
-    //  const navigate = useNavigate()
+    const navigate = useNavigate()
 
-    // const handleNavigation = () => {
-    //     navigate(`post/${index}`, {
-    //         state: { postId, title, description },
-    //     })
-    // }
+    const handleNavigation = () => {
+        navigate(`post/${index}`, {
+            state: { index },
+        })
+     }
 
     console.log('post info: ', postInfo)
 
@@ -47,6 +47,8 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
         downVotes,
     } = postInfo
 
+    console.log(upVotes?.toString())
+
     return (
         <div className="forum-container">
             <div className="avatar-title-wrapper">
@@ -54,7 +56,7 @@ const PostCard: React.FC<Props> = observer(({ currEpoch, index, postInfo }) => {
                     <img className="avatar__image" src={avatar} />
                 </div>
                 <div className="title-wrapper">
-                    <h3>{title}</h3>
+                    <h3 onClick={handleNavigation}>{title}</h3>
                     <div>{publicSignals![1].toString()}</div>
                 </div>
                 <div className="post-time-positioner">

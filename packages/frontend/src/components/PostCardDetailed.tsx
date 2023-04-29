@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import avatar from "../img/ObtLogo.png";
 import postButton from "../img/svg.svg";
 import { useLocation } from "react-router-dom";
@@ -8,13 +8,33 @@ import CommentCard from "./CommentCard";
 import { observer } from 'mobx-react-lite';
 import clock from "../img/clockIcon.png"
 import './postcarddetailed.css';
+import User from '../contexts/User'
+import { I_POST } from '../pages/types'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
+import { APP_ADDRESS, ETH_PROVIDER_URL } from '../pages/constants'
+import { ethers } from 'ethers'
 
 
 export default observer(() => { 
 
+  const APP_CONTRACT = new ethers.Contract(
+    APP_ADDRESS,
+    UNIREP_APP.abi,
+    new ethers.providers.JsonRpcProvider(ETH_PROVIDER_URL)
+)
+
     const { state } = useLocation()
-    const { postId, title, description } = state;
-    
+    const { index } = state;
+
+    const userContext = useContext(User)
+
+
+    const [comment, setComment] = useState("")
+
+    const handleChange = (event: any) => {
+        setComment(event.target.value);
+    }
+
     interface Comment {
         id: number;
         text: string;
@@ -23,7 +43,7 @@ export default observer(() => {
       const [comments, setComments] = useState<Array<Comment>>([]);
       
       useEffect(() => {
-        const fetchCommentsForPost = async (postId: number): Promise<Comment[]> => {
+        const fetchCommentsForPost = async (index: number): Promise<Comment[]> => {
             const allComments: { [key: number]: Comment[] } = {
               0: [
                 { id: 0, text: "ODTÜ Blockchain" },
@@ -35,41 +55,57 @@ export default observer(() => {
               ],
             };
           
-            return allComments[postId] || [];
+            return allComments[index] || [];
           };
           
       
-        fetchCommentsForPost(postId).then((fetchedComments) => {
+        fetchCommentsForPost(index).then((fetchedComments) => {
           setComments(fetchedComments);
         });
-      }, [postId]);
+      }, [index]);
+
+    const [post, setPost] = useState<I_POST>()
+
+    useEffect(() => {
+        updatePosts()
+    }, [])
       
-
-    const [comment, setComment] = useState("")
-
-    const handleChange = (event: any) => {
-        setComment(event.target.value);
+    const updatePosts = async () => {
+      const fetchedPosts = await APP_CONTRACT.getAllPosts();
+      setPost(fetchedPosts[index]);
     }
+
+    console.log(post)
 
     return(
         <div className="details-wrapper">
-            <h3 className="title-positioner">{title}</h3>
+            <h3 className="title-positioner">{post?.title.toString()}</h3>
             <div className="details-container">
                 <div className="info-positioner">
                     <img className="avatar" src={avatar} alt="Avatar" />
-                    <div className="epochKey">0xe00E6b5BEe15a0995f3391179CdaA4c098D94586</div>
+                    <div className="epochKey">{post?.epochKey?.toString()}</div>
                 </div>
                 <div className="description-container">
-                    {description}
+                    { post?.description.toString() }
                 </div>
                 <div className="vote-counts">
                     <div className="post-time-positioner">
                         <img className="post-time" src={clock} />
                         <p className="time-posted">18:50</p>
                     </div>
-                    <img className="arrow-down" src={upArrow} alt="Up arrow" />
-                    140
-                    <img className="arrow-up" src={downArrow} alt="Down arrow" />
+                    <img
+                    onClick={() => userContext.upVote(index)} 
+                    className="arrow-down" 
+                    src={upArrow} 
+                    alt="Up arrow" />
+
+                    {post?.upVotes?.toString()}
+
+
+                    <img 
+                    className="arrow-up" 
+                    src={downArrow} 
+                    alt="Down arrow" />
                 </div>
             </div>
             <div className="comment-container">
