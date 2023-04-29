@@ -5,7 +5,7 @@ import Button from '../components/Button'
 import Tooltip from '../components/Tooltip'
 import Post from '../components/Post'
 import Timer from '../components/Timer'
-import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
 import { ethers } from 'ethers'
 import { I_POST, I_COMMENT } from './types'
 
