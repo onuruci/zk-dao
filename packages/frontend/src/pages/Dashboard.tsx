@@ -5,7 +5,7 @@ import Button from '../components/Button'
 import Tooltip from '../components/Tooltip'
 import Post from '../components/Post'
 import Timer from '../components/Timer'
-import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
 import { ethers } from 'ethers'
 import { I_POST, I_COMMENT } from './types'
 
@@ -153,10 +153,11 @@ export default observer(() => {
                         <form className="post-form">
                             {Object.keys(post).map((key, index) => (
                                 <div
-                                    className={`post-field-container ${index === 1
-                                        ? 'last-post-field'
-                                        : 'not-last'
-                                        }`}
+                                    className={`post-field-container ${
+                                        index === 1
+                                            ? 'last-post-field'
+                                            : 'not-last'
+                                    }`}
                                 >
                                     <label htmlFor={key}>{key}</label>
                                     <input
@@ -225,7 +226,9 @@ export default observer(() => {
                         {posts?.length > 0 &&
                             posts.map((p: any, i: number) => {
                                 console.log(p)
-                                console.log(userContext.userState?.sync.calcCurrentEpoch());
+                                console.log(
+                                    userContext.userState?.sync.calcCurrentEpoch()
+                                )
                                 return (
                                     <Post
                                         epochKey={p.epochKey}

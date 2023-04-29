@@ -7,7 +7,7 @@ import { I_POST } from './types'
 import { ethers } from 'ethers'
 import { observer } from 'mobx-react-lite'
 import { APP_ADDRESS, ETH_PROVIDER_URL } from './constants'
-import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/ZKComm.json'
+import UNIREP_APP from '@unirep-app/contracts/artifacts/contracts/UnirepApp.sol/UnirepApp.json'
 
 import './forum.css'
 import Button from '../components/Button'
