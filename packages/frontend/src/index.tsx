@@ -8,7 +8,7 @@ import Forum from './pages/Forum'
 import Governance from './pages/Governance'
 import './index.css'
 import PostCardDetailed from './components/PostCardDetailed'
-import GovernanceDetailed from './components/GovernanceDetailed'
+import { ProposalDetailed } from './pages/ProposalDetailed'
 
 export default function App() {
     return (
@@ -19,8 +19,14 @@ export default function App() {
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="forum" element={<Forum />} />
                     <Route path="governance" element={<Governance />} />
-                    <Route path="governance/governance/:proposalId" element={<GovernanceDetailed />} />
-                    <Route path="forum/post/:postId" element={<PostCardDetailed />} />
+                    <Route
+                        path="governance/:proposalId"
+                        element={<ProposalDetailed />}
+                    />
+                    <Route
+                        path="forum/post/:postId"
+                        element={<PostCardDetailed />}
+                    />
                 </Route>
             </Routes>
         </BrowserRouter>

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 import {Unirep} from '@unirep/contracts/Unirep.sol';
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 
 // Uncomment this line to use console.log
 import 'hardhat/console.sol';
@@ -46,7 +46,7 @@ contract ZKComm is ERC20 {
         uint256 abstein;
         bool isActive;
         uint256 epochKey;
-        uint48 currEpoch;
+        uint48 proposalEpoch;
         uint256[5] publicSignals;
         uint256[8] proof;
     }
@@ -56,7 +56,11 @@ contract ZKComm is ERC20 {
     event UpVote(uint256 _index, uint256 _atstVal);
     event ProposalVote(uint256 _index, uint256 _vote);
 
-    constructor(Unirep _unirep, IVerifier _dataVerifier, uint48 _epochLength) ERC20("Reputation", "REP") {
+    constructor(
+        Unirep _unirep,
+        IVerifier _dataVerifier,
+        uint48 _epochLength
+    ) ERC20('Reputation', 'REP') {
         unirep = _unirep;
 
         dataVerifier = _dataVerifier;
@@ -74,6 +78,19 @@ contract ZKComm is ERC20 {
         unirep.userSignUp(publicSignals, proof);
     }
 
+    function upVote(uint256 index) public {
+        uint256 atstVal = 10;
+
+        unirep.attest(
+            posts[index].epochKey,
+            posts[index].postEpoch,
+            0,
+            atstVal
+        );
+        posts[index].upVotes++;
+        emit UpVote(index, atstVal);
+    }
+
     function newProposal(
         string memory title,
         string memory description,
@@ -88,21 +105,22 @@ contract ZKComm is ERC20 {
 
         // get epoch key epoch number and check if post in current epoch and generate it
 
-        proposals.push(Proposal(
-            proposalCount,
-            title,
-            description,
-            1000,
-            minRepToVote,
-            0,
-            0,
-            0,
-            true,
-            epochKey,
-            currEpoch,
-            publicSignals,
-            proof
-        ));
+        proposals.push(
+            Proposal(
+                proposalCount,
+                title,
+                description,
+                minRepToVote,
+                0,
+                0,
+                0,
+                true,
+                epochKey,
+                currEpoch,
+                publicSignals,
+                proof
+            )
+        );
 
         proposalCount++;
 
@@ -122,13 +140,13 @@ contract ZKComm is ERC20 {
 
         // get epoch key and label it as used to prevent duplicate voting
 
-        if(_vote == 0) {
+        if (_vote == 0) {
             // reject
             proposals[_index].rejects++;
-        } else if(_vote == 1) {
+        } else if (_vote == 1) {
             // approve
             proposals[_index].approvals++;
-        } else if(_vote == 2) {
+        } else if (_vote == 2) {
             // abstein
             proposals[_index].abstein++;
         }
@@ -136,13 +154,16 @@ contract ZKComm is ERC20 {
         emit ProposalVote(_index, _vote);
     }
 
-    function closeProposal(
-        uint256 _index
-    ) public {
+    function closeProposal(uint256 _index) public {
         proposals[_index].isActive = false;
 
-        if(proposals[_index].approvals > proposals[_index].rejects) {
-            unirep.attest(proposals[_index].epochKey, proposals[_index].currEpoch, 1, proposals[_index].tokenDemands);
+        if (proposals[_index].approvals > proposals[_index].rejects) {
+            unirep.attest(
+                proposals[_index].epochKey,
+                proposals[_index].currEpoch,
+                1,
+                proposals[_index].tokenDemands
+            );
         }
     }
 
@@ -185,7 +206,12 @@ contract ZKComm is ERC20 {
     function upVote(uint256 index) public {
         uint256 atstVal = 100;
 
-        unirep.attest(posts[index].epochKey, posts[index].postEpoch, 0, atstVal);
+        unirep.attest(
+            posts[index].epochKey,
+            posts[index].postEpoch,
+            0,
+            atstVal
+        );
 
         posts[index].upVotes++;
         emit UpVote(index, atstVal);
@@ -219,6 +245,8 @@ contract ZKComm is ERC20 {
         return dataVerifier.verifyProof(publicSignals, proof);
     }
 }
+
+// Send proposals properly
 
 // Vote on proposals
 

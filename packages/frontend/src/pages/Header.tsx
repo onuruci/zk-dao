@@ -5,10 +5,6 @@ import './header.css'
 export default () => {
     const navigate = useNavigate()
 
-    const goToForum = () => {
-        navigate('/forum')
-    }
-
     return (
         <>
             <div className="header">
@@ -19,17 +15,12 @@ export default () => {
                     />
                 </Link>
                 <div className="links">
-                    <div className="navigateButtons" onClick={goToForum}>
+                    <Link to="/forum" className="navigateButtons">
                         Forum
-                    </div>
-                    <div
-                        className="navigateButtons"
-                        onClick={() => {
-                            navigate('/governance')
-                        }}
-                    >
+                    </Link>
+                    <Link to="/governance" className="navigateButtons">
                         Governance
-                    </div>
+                    </Link>
                     <a
                         href="https://discord.com/invite/VzMMDJmYc5"
                         target="blank"
