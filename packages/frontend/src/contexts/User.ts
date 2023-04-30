@@ -459,6 +459,44 @@ class User {
         await this.userState.waitForSync()
         await this.loadData()
     }
+
+    async closePoll(index: number) {
+        if (!this.userState) throw new Error('user state not initialized')
+
+        const data = await fetch(`${SERVER}/api/closeProposal`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(
+                stringifyBigInts({
+                    index,
+                })
+            ),
+        }).then((r) => r.json())
+        await this.provider.waitForTransaction(data.hash)
+        await this.userState.waitForSync()
+        await this.loadData()
+    }
+
+    async closeTransition(index: any) {
+        if (!this.userState) throw new Error('user state not initialized')
+
+        const data = await fetch(`${SERVER}/api/upvote`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(
+                stringifyBigInts({
+                    index,
+                })
+            ),
+        }).then((r) => r.json())
+        await this.provider.waitForTransaction(data.hash)
+        await this.userState.waitForSync()
+        await this.loadData()
+    }
 }
 
 export default createContext(new User())

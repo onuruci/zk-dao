@@ -64,7 +64,10 @@ export const ProposalDetailed = () => {
         setWidths(newWidths)
     }, [proposalInfo])
 
-    console.log(userContext.data)
+    console.log(
+        userContext.userState?.sync.calcCurrentEpoch(),
+        proposalInfo?.epochKey
+    )
 
     return (
         <div className="detailed-proposal-outer-wrapper">
@@ -138,6 +141,13 @@ export const ProposalDetailed = () => {
                             </button>
                         </div>
                     </section>
+                    <button
+                        onClick={() =>
+                            userContext.closePoll(parseInt(proposalId!))
+                        }
+                    >
+                        Close Poll
+                    </button>
                 </div>
                 <div>
                     <div className="info-container">
