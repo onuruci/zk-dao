@@ -318,6 +318,60 @@ class User {
         await this.loadData()
     }
 
+    async spendTokens(epkNonce: number, provedTokens: number, address: string) {
+        if (!this.userState) throw new Error('user state not initialized')
+
+        const epoch = await this.userState.sync.loadCurrentEpoch()
+        const stateTree = await this.userState.sync.genStateTree(epoch)
+        const index = await this.userState.latestStateTreeLeafIndex(epoch)
+        const stateTreeProof = stateTree.createProof(index)
+        const provableData = await this.userState.getProvableData()
+
+        const values = [0, provedTokens, 0, 0]
+
+        console.log('values: ', values)
+        const attesterId = this.userState.sync.attesterId
+        const circuitInputs = stringifyBigInts({
+            identity_secret: this.userState.id.secret,
+            state_tree_indexes: stateTreeProof.pathIndices,
+            state_tree_elements: stateTreeProof.siblings,
+            data: provableData,
+            epoch: epoch,
+            attester_id: attesterId,
+            value: values,
+        })
+        const { publicSignals, proof } = await prover.genProofAndPublicSignals(
+            'dataProof',
+            circuitInputs
+        )
+        const dataProof = new DataProof(publicSignals, proof, prover)
+        const valid = await dataProof.verify()
+
+        const epochKeyProof = await this.userState.genEpochKeyProof({
+            nonce: epkNonce,
+        })
+
+        const args = JSON.stringify(
+            stringifyBigInts({
+                repSignals: dataProof.publicSignals,
+                repProof: dataProof.proof,
+                address: address,
+                /// proposal will be added
+            })
+        )
+
+        const dat = await fetch(`${SERVER}/api/newProposal`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: args,
+        }).then((r) => r.json())
+        await this.provider.waitForTransaction(dat.hash)
+        await this.userState.waitForSync()
+        await this.loadData()
+    }
+
     async stateTransition() {
         if (!this.userState) throw new Error('user state not initialized')
 

@@ -110,7 +110,7 @@ contract ZKComm is ERC20 {
                 proposalCount,
                 title,
                 description,
-                1000,
+                1*10**18,
                 minRepToVote,
                 0,
                 0,

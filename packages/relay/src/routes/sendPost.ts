@@ -40,7 +40,6 @@ export default (app: Express, db: DB, synchronizer: Synchronizer) => {
                 synchronizer.prover
             )
 
-            console.log(reputationProof.minRep);
 
             // Fix and check reputationProof
 
