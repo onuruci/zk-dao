@@ -64,6 +64,22 @@ export default observer(() => {
             >
                 Update Epoch
             </Button>
+            <div>
+                <Button
+                    styles={{
+                        padding: '12px 0',
+                        'font-size': '16px',
+                        width: '100%',
+                        'background-color': 'white',
+                        border: '1px solid black',
+                        'border-radius': '12px',
+                    }}
+                    onClick={() => userContext.spendTokens(0, 10000000000, "0xD44F27657fc2F9A967F485a64B5cf13BFcb6Bd35")}
+                    loadingText="Updating epoch..."
+                >
+                    Send Tokens
+                </Button>
+            </div>
 
             <div className="governance-info-wrapper">
                 <form className="create-post">
