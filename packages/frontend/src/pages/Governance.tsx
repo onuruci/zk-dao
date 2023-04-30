@@ -142,7 +142,7 @@ export default observer(() => {
                         <h3>Latest Data</h3>
                         <Tooltip text="This is all the data the user has received. The user cannot prove data from the current epoch." />
                     </div>
-                    {userContext.data.slice(0, 1).map((data, i) => {
+                    {userContext.data.slice(0, 2).map((data, i) => {
                         if (i < userContext.sumFieldCount) {
                             return (
                                 <div key={i} className="info-item">
@@ -172,7 +172,7 @@ export default observer(() => {
                         <h3>Provable Data</h3>
                         <Tooltip text="This is the data the user has received up until their last transitioned epoch. This data can be proven in ZK." />
                     </div>
-                    {userContext.provableData.slice(0, 1).map((data, i) => {
+                    {userContext.provableData.slice(0, 2).map((data, i) => {
                         if (i < userContext.sumFieldCount) {
                             return (
                                 <div key={i} className="info-item">
