@@ -463,6 +463,8 @@ class User {
     async closePoll(index: number) {
         if (!this.userState) throw new Error('user state not initialized')
 
+        console.log('index: ', index)
+
         const data = await fetch(`${SERVER}/api/closeProposal`, {
             method: 'POST',
             headers: {
